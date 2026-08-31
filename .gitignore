@@ -1,0 +1,19 @@
+# Credenciales y configuración local
+parameters.json
+.env
+.env.*
+*.pem
+*.key
+
+# Entornos virtuales y cachés de Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+
+# Archivos locales del IDE
+.idea/
+
+# Salidas y registros locales
+*.log
