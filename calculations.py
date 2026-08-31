@@ -19,10 +19,10 @@ def _heikin_ashi_direction(kline_data, temporalidad):
     candles = sorted(kline_data, key=lambda candle: int(candle[0]))
     heikin_ashi = []
 
-    total_candles = len(candles)
+    # total_candles = len(candles)  # Depuración de las tres últimas velas.
 
     for index, candle in enumerate(candles, start=1):
-        candle_time = datetime.fromtimestamp(int(candle[0]) / 1000, tz=timezone.utc)
+        # candle_time = datetime.fromtimestamp(int(candle[0]) / 1000, tz=timezone.utc)
         open_price, high_price, low_price, close_price = map(float, candle[1:5])
         ha_close = (open_price + high_price + low_price + close_price) / 4
 
@@ -33,29 +33,30 @@ def _heikin_ashi_direction(kline_data, temporalidad):
             ha_open = (open_price + close_price) / 2
 
         heikin_ashi.append((ha_open, ha_close))
-        # Solo se imprimen las tres últimas; las anteriores calientan el cálculo HA.
-        if index > total_candles - 3:
-            print(
-                f"{temporalidad.capitalize()} | vela {index - (total_candles - 3)} de 3 | "
-                f"fecha UTC={candle_time:%Y-%m-%d %H:%M} | "
-                f"OHLC Bybit: O={open_price:.8f}, H={high_price:.8f}, "
-                f"L={low_price:.8f}, C={close_price:.8f} | "
-                f"Heikin-Ashi: O={ha_open:.8f}, C={ha_close:.8f}"
-            )
+        # Depuración: imprimir OHLC de Bybit y valores HA de las tres últimas velas.
+        # if index > total_candles - 3:
+        #     print(
+        #         f"{temporalidad.capitalize()} | vela {index - (total_candles - 3)} de 3 | "
+        #         f"fecha UTC={candle_time:%Y-%m-%d %H:%M} | "
+        #         f"OHLC Bybit: O={open_price:.8f}, H={high_price:.8f}, "
+        #         f"L={low_price:.8f}, C={close_price:.8f} | "
+        #         f"Heikin-Ashi: O={ha_open:.8f}, C={ha_close:.8f}"
+        #     )
 
     last_ha_open, last_ha_close = heikin_ashi[-1]
     penultim_ha_open, penultim_ha_close = heikin_ashi[-2]
     antepenultim_ha_open, antepenultim_ha_close = heikin_ashi[-3]
 
-    def classification(ha_open, ha_close):
-        return "Alcista" if ha_close > ha_open else "Bajista"
-
-    print(f"Última vela {temporalidad}: {classification(last_ha_open, last_ha_close)}")
-    print(f"Penúltima vela {temporalidad}: {classification(penultim_ha_open, penultim_ha_close)}")
-    print(
-        f"Antepenúltima vela {temporalidad}: "
-        f"{classification(antepenultim_ha_open, antepenultim_ha_close)}"
-    )
+    # Depuración: clasificación de las tres últimas velas.
+    # def classification(ha_open, ha_close):
+    #     return "Alcista" if ha_close > ha_open else "Bajista"
+    #
+    # print(f"Última vela {temporalidad}: {classification(last_ha_open, last_ha_close)}")
+    # print(f"Penúltima vela {temporalidad}: {classification(penultim_ha_open, penultim_ha_close)}")
+    # print(
+    #     f"Antepenúltima vela {temporalidad}: "
+    #     f"{classification(antepenultim_ha_open, antepenultim_ha_close)}"
+    # )
 
     return int(last_ha_close > last_ha_open), int(penultim_ha_close > penultim_ha_open), int(antepenultim_ha_close > antepenultim_ha_open),
 
