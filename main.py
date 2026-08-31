@@ -33,13 +33,13 @@ def activacion(symbol):
         if current_time.minute == 0 and current_time.second == 3:
 
             # Se comprueba si hay una orden abierta
-            comprobacion = is_position_open(symbol)
+            comprobacion = is_position_open(symbol, api_key, api_secret, url_position)
             if comprobacion == "Buy":
                 (last_w, last_d, last_h, penultim_w, penultim_d, penultim_h, antepenultim_w, antepenultim_d, antepenultim_h) = hanking_ashi_bars()
                 if antepenultim_h == 1 and penultim_h == 0:
                     message = "f{current_time.hour}:{current_time.minute}: Posicion Alcista activa. Se produce señal de salida de la posicion"
                     print(message)
-                    send_close_to_bybit(symbol, "Sell")
+                    send_close_to_bybit(symbol, api_key, api_secret, url, url_position)
                     send_telegram_notification(message, tg_bot_token, tg_chat_id)
                     time.sleep(2)
                 else:
@@ -51,7 +51,7 @@ def activacion(symbol):
                 if antepenultim_h == 0 and penultim_h == 1:
                     message = f"{current_time.hour}:{current_time.minute}: Posicion Bajista activa. Se produce señal de salida de la posicion"
                     print(message)
-                    send_close_to_bybit(symbol, "Buy")
+                    send_close_to_bybit(symbol, api_key, api_secret, url, url_position)
                     send_telegram_notification(message, tg_bot_token, tg_chat_id)
                     time.sleep(2)
                 else:
@@ -65,13 +65,13 @@ def activacion(symbol):
                 if last_w == 1 and last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
                     message = f"{current_time.hour}:{current_time.minute}: Condiciones de entrada favorables. Se procede con envio de orden alcista"
                     print(message)
-                    send_order_to_bybit(symbol, "Buy")
+                    send_order_to_bybit(symbol, "Buy", api_key, api_secret, qty, url)
                     send_telegram_notification(message, tg_bot_token, tg_chat_id)
                     time.sleep(2)
                 elif last_w == 0 and last_d == 0 and (antepenultim_h == 1 and penultim_h == 0):
                     message = f"{current_time.hour}:{current_time.minute}: Condiciones de entrada favorables. Se procede con envio de orden bajista"
                     print(message)
-                    send_order_to_bybit(symbol,"Sell")
+                    send_order_to_bybit(symbol,"Sell", api_key, api_secret, qty, url)
                     send_telegram_notification(message, tg_bot_token, tg_chat_id)
                     time.sleep(2)
                 else:
