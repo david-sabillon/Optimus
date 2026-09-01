@@ -37,7 +37,7 @@ def activacion(symbol):
             if comprobacion == "Buy":
                 (last_w, last_d, last_h, penultim_w, penultim_d, penultim_h, antepenultim_w, antepenultim_d, antepenultim_h) = hanking_ashi_bars()
                 if antepenultim_h == 1 and penultim_h == 0:
-                    message = "f{current_time.hour}:0{current_time.minute}: Posicion Alcista. Se produce señal de salida de la posicion"
+                    message = f"{current_time.hour}:0{current_time.minute}: Posicion Alcista. Se produce señal de salida de la posicion"
                     print(message)
                     send_close_to_bybit(symbol, api_key, api_secret, url, url_position)
                     send_telegram_notification(message, tg_bot_token, tg_chat_id)
