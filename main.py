@@ -63,7 +63,7 @@ def activacion(symbol):
             else:
                 (last_w, last_d, last_h, penultim_w, penultim_d, penultim_h, antepenultim_w, antepenultim_d, antepenultim_h) = hanking_ashi_bars()
                 if last_w == 1 and last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
-                    message = f"{current_time.hour}:{current_time.minute}: Condiciones de entrada favorables. Se procede con envio de orden alcista"
+                    message = f"{current_time.hour}:0{current_time.minute}: Condiciones de entrada favorables. Se procede con envio de orden alcista"
                     print(message)
                     send_order_to_bybit(symbol, "Buy", api_key, api_secret, qty, url)
                     send_telegram_notification(message, tg_bot_token, tg_chat_id)
