@@ -30,7 +30,7 @@ def activacion(symbol):
     print(f"Iniciando sistema de Trading {software}")
     while True:
         current_time = datetime.now()
-        if current_time.minute == 0 and current_time.second == 3:
+        if current_time.minute == 0 and current_time.second == 6:
 
             # Se comprueba si hay una orden abierta
             comprobacion = is_position_open(symbol, api_key, api_secret, url_position)
