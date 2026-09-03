@@ -13,7 +13,10 @@ def _heikin_ashi_direction(kline_data, temporalidad):
     y ordenadas de la más reciente a la más antigua.
     """
     if len(kline_data) < 3:
-        raise ValueError("Se necesitan al menos tres velas para calcular Heikin-Ashi.")
+        raise ValueError(
+            f"Bybit devolvió {len(kline_data)} velas {temporalidad}; "
+            "se necesitan al menos tres para calcular Heikin-Ashi."
+        )
 
     # Se ordenan de antigua a reciente para que cada apertura HA use la vela HA previa.
     candles = sorted(kline_data, key=lambda candle: int(candle[0]))

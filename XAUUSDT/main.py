@@ -2,6 +2,7 @@ from datetime import datetime
 from pathlib import Path
 import time
 import json
+import requests
 
 
 # Modulos locales
@@ -34,8 +35,21 @@ def activacion(symbol):
 
             # Se comprueba si hay una orden abierta
             comprobacion = is_position_open(symbol, api_key, api_secret, url_position)
+            try:
+                (
+                    last_w, last_d, last_h,
+                    penultim_w, penultim_d, penultim_h,
+                    antepenultim_w, antepenultim_d, antepenultim_h,
+                ) = hanking_ashi_bars()
+            except (ValueError, RuntimeError, requests.RequestException) as error:
+                print(
+                    f"{current_time:%Y-%m-%d %H:%M}: no se evaluarán señales de "
+                    f"{symbol} en este ciclo: {error}"
+                )
+                time.sleep(2)
+                continue
+
             if comprobacion == "Buy":
-                (last_w, last_d, last_h, penultim_w, penultim_d, penultim_h, antepenultim_w, antepenultim_d, antepenultim_h) = hanking_ashi_bars()
                 if antepenultim_h == 1 and penultim_h == 0:
                     message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Posicion ALCISTA. Se produce señal de salida de la posicion."
                     print(message)
@@ -47,7 +61,6 @@ def activacion(symbol):
                     time.sleep(2)
                     continue
             elif comprobacion == "Sell":
-                (last_w, last_d, last_h, penultim_w, penultim_d, penultim_h, antepenultim_w, antepenultim_d, antepenultim_h) = hanking_ashi_bars()
                 if antepenultim_h == 0 and penultim_h == 1:
                     message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Posicion BAJISTA. Se produce señal de salida de la posicion."
                     print(message)
@@ -61,7 +74,6 @@ def activacion(symbol):
 
             # Si no hay orden abierta, se comprueban las condiciones de entrada
             else:
-                (last_w, last_d, last_h, penultim_w, penultim_d, penultim_h, antepenultim_w, antepenultim_d, antepenultim_h) = hanking_ashi_bars()
                 if last_w == 1 and last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
                     message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Condiciones de entrada favorables. Se procede con envio de orden ALCISTA."
                     print(message)
