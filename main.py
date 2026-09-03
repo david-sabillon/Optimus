@@ -8,8 +8,7 @@ import requests
 # Modulos locales
 from calculations import hanking_ashi_bars
 from bybit_modules import send_order_to_bybit, is_position_open, send_close_to_bybit
-from miscelaneos import send_telegram_notification
-
+from miscelaneos import send_telegram_notification, write_messages
 
 PARAMETERS_FILE = Path(__file__).with_name("parameters.json")
 
@@ -42,10 +41,10 @@ def activacion(symbol):
                     antepenultim_w, antepenultim_d, antepenultim_h,
                 ) = hanking_ashi_bars()
             except (ValueError, RuntimeError, requests.RequestException) as error:
-                print(
-                    f"{current_time:%Y-%m-%d %H:%M}: no se evaluarán señales de "
-                    f"{symbol} en este ciclo: {error}"
-                )
+                message = (f"{current_time:%Y-%m-%d %H:%M}: no se evaluarán señales de "
+                f"{symbol} en este ciclo: {error}")
+                print(message)
+                write_messages(message)
                 time.sleep(2)
                 continue
 
