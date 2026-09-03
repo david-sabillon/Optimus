@@ -42,7 +42,7 @@ def activacion(symbol):
                     last_w, last_d, last_h,
                     penultim_w, penultim_d, penultim_h,
                     antepenultim_w, antepenultim_d, antepenultim_h,
-                ) = hanking_ashi_bars()
+                ) = hanking_ashi_bars(symbol)
             except (ValueError, RuntimeError, requests.RequestException) as error:
                 message = (f"{current_time:%Y-%m-%d %H:%M}: no se evaluarán señales de "
                            f"{symbol} en este ciclo: {error}")

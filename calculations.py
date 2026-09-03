@@ -64,13 +64,12 @@ def _heikin_ashi_direction(kline_data, temporalidad):
     return int(last_ha_close > last_ha_open), int(penultim_ha_close > penultim_ha_open), int(antepenultim_ha_close > antepenultim_ha_open),
 
 
-def hanking_ashi_bars():
+def hanking_ashi_bars(symbol):
     """Clasifica las velas Heikin-Ashi semanal, diaria y horaria.
 
     Cada valor devuelto es 1 para una vela alcista y 0 para una bajista o doji.
     """
     # La importación local evita la dependencia circular con main.py.
-    from main import symbol
 
     heikin_ashi_semanal = get_kline_data(symbol, interval="W", limit=HISTORICAL_CANDLES)
     heikin_ashi_diaria = get_kline_data(symbol, interval="D", limit=HISTORICAL_CANDLES)
