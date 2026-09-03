@@ -34,6 +34,8 @@ def activacion(symbol):
 
             # Se comprueba si hay una orden abierta
             comprobacion = is_position_open(symbol, api_key, api_secret, url_position)
+
+            # Descarga los datos historicos en las tres temporalidades
             try:
                 (
                     last_w, last_d, last_h,
@@ -48,6 +50,7 @@ def activacion(symbol):
                 time.sleep(2)
                 continue
 
+            # Comienza la logica condicional para comprobar direccion de posicion abierta o señal de entrada
             if comprobacion == "Buy":
                 if antepenultim_h == 1 and penultim_h == 0:
                     message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Posicion ALCISTA. Se produce señal de salida de la posicion."
