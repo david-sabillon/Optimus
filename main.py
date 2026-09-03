@@ -62,6 +62,7 @@ def activacion(symbol):
                 else:
                     message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Posicion ALCISTA activa y sin cambios. Se mantiene la posicion."
                     print(message)
+                    write_messages(message)
                     time.sleep(2)
                     continue
             elif comprobacion == "Sell":
@@ -98,6 +99,7 @@ def activacion(symbol):
                 else:
                     message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Sin señales de activacion. Se reinicia el ciclo de comprobacion dentro de una hora."
                     print(message)
+                    write_messages(message)
                     time.sleep(2)
                     continue
         time.sleep(1)
