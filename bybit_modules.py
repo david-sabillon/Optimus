@@ -8,7 +8,7 @@ from colorama import Fore
 
 
 def get_kline_data(symbol, interval, limit):
-    """Obtiene datos del API de Bybit."""
+    """Obtiene y valida velas del API de Bybit."""
     url = "https://api.bybit.com/v5/market/kline"
     params = {
         'category': 'linear',
@@ -16,9 +16,17 @@ def get_kline_data(symbol, interval, limit):
         'interval': interval,
         'limit': limit
     }
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=15)
     response.raise_for_status()
-    return response.json().get('result', {}).get('list', [])
+    payload = response.json()
+
+    if payload.get("retCode") != 0:
+        raise RuntimeError(
+            "Bybit no devolvió velas para "
+            f"{symbol} ({interval}): {payload.get('retMsg', 'error desconocido')}"
+        )
+
+    return payload.get("result", {}).get("list", [])
 
 def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries=5, wait_time=2):
     """Envía una orden de mercado al API de Bybit con reintentos en caso de error."""
