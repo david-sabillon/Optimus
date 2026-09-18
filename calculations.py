@@ -73,7 +73,7 @@ def hanking_ashi_bars(symbol):
 
     heikin_ashi_semanal = get_kline_data(symbol, interval="W", limit=HISTORICAL_CANDLES)
     heikin_ashi_diaria = get_kline_data(symbol, interval="D", limit=HISTORICAL_CANDLES)
-    heikin_ashi_hora = get_kline_data(symbol, interval="60", limit=HISTORICAL_CANDLES)
+    heikin_ashi_hora = get_kline_data(symbol, interval="240", limit=HISTORICAL_CANDLES)
 
     last_ashi_semanal, penultim_ashi_semanal, antepenultim_ashi_semanal = _heikin_ashi_direction(heikin_ashi_semanal, "semanal")
     last_ashi_diaria, penultim_ashi_diaria, antepenultim_ashi_diaria = _heikin_ashi_direction(heikin_ashi_diaria, "diaria")
