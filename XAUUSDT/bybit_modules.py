@@ -7,8 +7,8 @@ import requests
 from colorama import Fore
 
 
-def get_kline_data(symbol, interval, limit):
-    """Obtiene y valida velas del API de Bybit."""
+def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
+    """Obtiene velas y reintenta con espera incremental ante límites de Bybit."""
     url = "https://api.bybit.com/v5/market/kline"
     params = {
         'category': 'linear',
@@ -16,17 +16,76 @@ def get_kline_data(symbol, interval, limit):
         'interval': interval,
         'limit': limit
     }
-    response = requests.get(url, params=params, timeout=15)
-    response.raise_for_status()
-    payload = response.json()
+    error_message = "no se recibió una respuesta válida de Bybit"
 
-    if payload.get("retCode") != 0:
-        raise RuntimeError(
-            "Bybit no devolvió velas para "
-            f"{symbol} ({interval}): {payload.get('retMsg', 'error desconocido')}"
-        )
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, params=params, timeout=15)
+            if response.status_code == 429:
+                error_message = "HTTP 429: Too Many Requests"
+            else:
+                response.raise_for_status()
+                payload = response.json()
+                ret_code = payload.get("retCode")
 
-    return payload.get("result", {}).get("list", [])
+                if ret_code == 0:
+                    return payload.get("result", {}).get("list", [])
+
+                ret_message = payload.get("retMsg", "error desconocido")
+                error_message = f"{ret_message} (retCode={ret_code})"
+                if ret_code != 10006 and "too many visits" not in ret_message.lower():
+                    raise RuntimeError(
+                        "Bybit no devolvió velas para "
+                        f"{symbol} ({interval}): {ret_message}"
+                    )
+
+            if attempt == max_retries - 1:
+                break
+
+            delay = wait_time * (attempt + 1)
+            print(
+                f"Límite de Bybit al consultar {symbol} ({interval}); "
+                f"reintento {attempt + 2}/{max_retries} en {delay} segundos."
+            )
+            time.sleep(delay)
+
+        except requests.HTTPError as error:
+            if error.response is None or error.response.status_code != 429:
+                raise
+            error_message = "HTTP 429: Too Many Requests"
+            if attempt == max_retries - 1:
+                break
+            delay = wait_time * (attempt + 1)
+            print(
+                f"Límite de Bybit al consultar {symbol} ({interval}); "
+                f"reintento {attempt + 2}/{max_retries} en {delay} segundos."
+            )
+            time.sleep(delay)
+        except requests.ConnectionError as error:
+            error_message = f"error de conexión: {error}"
+            if attempt == max_retries - 1:
+                break
+            delay = wait_time * (attempt + 1)
+            print(
+                f"Error de conexión al consultar {symbol} ({interval}); "
+                f"reintento {attempt + 2}/{max_retries} en {delay} segundos."
+            )
+            time.sleep(delay)
+        except requests.Timeout as error:
+            error_message = f"timeout de conexión: {error}"
+            if attempt == max_retries - 1:
+                break
+            delay = wait_time * (attempt + 1)
+            print(
+                f"Timeout al consultar {symbol} ({interval}); "
+                f"reintento {attempt + 2}/{max_retries} en {delay} segundos."
+            )
+            time.sleep(delay)
+
+    raise RuntimeError(
+        f"Bybit no devolvió velas para {symbol} ({interval}) después de "
+        f"{max_retries} intentos: {error_message}"
+    )
 
 def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries=5, wait_time=2):
     """Envía una orden de mercado al API de Bybit con reintentos en caso de error."""
