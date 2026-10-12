@@ -1,5 +1,7 @@
+from types import SimpleNamespace
 import requests
 from pathlib import Path
+import json
 
 def send_telegram_notification(message, tg_bot_token, tg_chat_id):
     bot_token = tg_bot_token
@@ -24,3 +26,22 @@ def write_messages(messages):
 
     with activity_file.open("a", encoding="utf-8") as file:
         file.write(messages + "\n")
+
+def parameters_file():
+    parameter_file = Path(__file__).with_name("parameters.json")
+
+    with parameter_file.open("r", encoding="utf-8") as file:
+        parameters = json.load(file)
+
+    return SimpleNamespace(
+    symbol = parameters["symbol"],
+    crypto = parameters["crypto"],
+    api_key = parameters["api_key"],
+    api_secret = parameters["api_secret"],
+    software = parameters["software"],
+    qty = parameters["qty"],
+    url = parameters["url"],
+    url_position = parameters["url_position"],
+    tg_bot_token = parameters["bot_token"],
+    tg_chat_id = parameters["chat_id"])
+

@@ -4,11 +4,15 @@ import json
 import subprocess
 import hmac
 import requests
-from colorama import Fore
+from datetime import datetime
+
+
+from miscelaneos import write_messages
 
 
 def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
     """Obtiene velas y reintenta con espera incremental ante límites de Bybit."""
+    current_time = datetime.now()
     url = "https://api.bybit.com/v5/market/kline"
     params = {
         'category': 'linear',
@@ -16,13 +20,17 @@ def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
         'interval': interval,
         'limit': limit
     }
-    error_message = "no se recibió una respuesta válida de Bybit"
+    error_message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} no se recibió una respuesta válida de Bybit"
+    write_messages(error_message)
+    print(error_message)
 
     for attempt in range(max_retries):
         try:
             response = requests.get(url, params=params, timeout=15)
             if response.status_code == 429:
-                error_message = "HTTP 429: Too Many Requests"
+                error_message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} HTTP 429: Too Many Requests."
+                write_messages(error_message)
+                print(error_message)
             else:
                 response.raise_for_status()
                 payload = response.json()
@@ -32,7 +40,9 @@ def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
                     return payload.get("result", {}).get("list", [])
 
                 ret_message = payload.get("retMsg", "error desconocido")
-                error_message = f"{ret_message} (retCode={ret_code})"
+                error_message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} {ret_message} (retCode={ret_code})"
+                write_messages(error_message)
+                print(error_message)
                 if ret_code != 10006 and "too many visits" not in ret_message.lower():
                     raise RuntimeError(
                         "Bybit no devolvió velas para "
@@ -43,43 +53,61 @@ def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
                 break
 
             delay = wait_time * (attempt + 1)
-            print(
+            message_delay = (
+                f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                 f"Límite de Bybit al consultar {symbol} ({interval}); "
                 f"reintento {attempt + 2}/{max_retries} en {delay} segundos."
             )
+            write_messages(message_delay)
+            print(message_delay)
             time.sleep(delay)
 
         except requests.HTTPError as error:
             if error.response is None or error.response.status_code != 429:
                 raise
-            error_message = "HTTP 429: Too Many Requests"
+            error_message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} HTTP 429: Too Many Requests"
+            write_messages(error_message)
+            print(error_message)
             if attempt == max_retries - 1:
                 break
             delay = wait_time * (attempt + 1)
-            print(
+            message_delay = (
+                f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                 f"Límite de Bybit al consultar {symbol} ({interval}); "
                 f"reintento {attempt + 2}/{max_retries} en {delay} segundos."
             )
+            write_messages(message_delay)
+            print(message_delay)
             time.sleep(delay)
         except requests.ConnectionError as error:
-            error_message = f"error de conexión: {error}"
+            error_message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} error de conexión: {error}"
+            write_messages(error_message)
+            print(error_message)
             if attempt == max_retries - 1:
                 break
             delay = wait_time * (attempt + 1)
-            print(
+            message_connection = (
+                f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                 f"Error de conexión al consultar {symbol} ({interval}); "
                 f"reintento {attempt + 2}/{max_retries} en {delay} segundos."
             )
+            write_messages(message_connection)
+            print(message_connection)
             time.sleep(delay)
         except requests.Timeout as error:
-            error_message = f"timeout de conexión: {error}"
+            error_message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} timeout de conexión: {error}"
+            write_messages(error_message)
+            print(error_message)
             if attempt == max_retries - 1:
                 break
             delay = wait_time * (attempt + 1)
-            print(
+            message_time_out = (
+                f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                 f"Timeout al consultar {symbol} ({interval}); "
                 f"reintento {attempt + 2}/{max_retries} en {delay} segundos."
             )
+            write_messages(message_time_out)
+            print(message_time_out)
             time.sleep(delay)
 
     raise RuntimeError(
@@ -89,6 +117,7 @@ def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
 
 def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries=5, wait_time=2):
     """Envía una orden de mercado al API de Bybit con reintentos en caso de error."""
+    current_time = datetime.now()
 
     for attempt in range(max_retries):
         try:
@@ -142,19 +171,31 @@ def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries
 
             # Procesar respuesta
             if result.returncode == 0:
-                print(Fore.GREEN + "Orden de mercado enviada exitosamente." + Fore.RESET)
+                sent_order = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Orden de mercado enviada exitosamente."
+                write_messages(sent_order)
+                print(sent_order)
                 return True
             else:
-                print(Fore.RED + f"Error al enviar la orden (Intento {attempt + 1}/{max_retries})." + Fore.RESET)
-                print(Fore.RED + result.stderr + Fore.RESET)
+                network_error = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Error al enviar la orden (Intento {attempt + 1}/{max_retries})."
+                write_messages(network_error)
+                print(network_error)
+                curl_error = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} {result.stderr}"
+                write_messages(curl_error)
+                print(curl_error)
 
         except Exception as e:
-            print(Fore.RED + f"Error al procesar la orden (Intento {attempt + 1}/{max_retries}): {e}" + Fore.RESET)
+            exception_error = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                               f"Error al procesar la orden (Intento {attempt + 1}/{max_retries}): {e}")
+            write_messages(exception_error)
+            print(exception_error)
 
         # Esperar antes de reintentar
         time.sleep(wait_time)
 
-    print(Fore.RED + f"No se pudo enviar la orden después de {max_retries} intentos." + Fore.RESET)
+    network_error = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                     f"No se pudo enviar la orden después de {max_retries} intentos.")
+    write_messages(network_error)
+    print(network_error)
     return False
 
 def send_close_to_bybit(symbol, api_key, api_secret, url, url_position, max_retries=5, wait_time=2):
@@ -164,7 +205,7 @@ def send_close_to_bybit(symbol, api_key, api_secret, url, url_position, max_retr
     """
     url_position = url_position
     url_order = url
-
+    current_time = datetime.now()
 
     for attempt in range(max_retries):
         try:
@@ -193,13 +234,17 @@ def send_close_to_bybit(symbol, api_key, api_secret, url, url_position, max_retr
             response = requests.get(url_position, headers=headers, params=params)
 
             if response.status_code != 200:
-                print(Fore.RED + f"Error al obtener posición: {response.text}" + Fore.RESET)
+                error_message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Error al obtener posición: {response.text}"
+                write_messages(error_message)
+                print(error_message)
                 time.sleep(wait_time)
                 continue
 
             data = response.json()
             if data.get("retCode") != 0:
-                print(Fore.RED + f"Error en la API: {data.get('retMsg')}" + Fore.RESET)
+                error_api = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Error en la API: {data.get('retMsg')}"
+                write_messages(error_api)
+                print(error_api)
                 time.sleep(wait_time)
                 continue
 
@@ -208,7 +253,9 @@ def send_close_to_bybit(symbol, api_key, api_secret, url, url_position, max_retr
             side = position.get("side")
 
             if size == 0:
-                print(Fore.YELLOW + "No hay posiciones abiertas para cerrar." + Fore.RESET)
+                no_open_position = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} No hay posiciones abiertas para cerrar."
+                write_messages(no_open_position)
+                print(no_open_position)
                 return False
 
             # Definir la orden opuesta
@@ -239,21 +286,33 @@ def send_close_to_bybit(symbol, api_key, api_secret, url, url_position, max_retr
             if response_order.status_code == 200:
                 data_order = response_order.json()
                 if data_order.get("retCode") == 0:
-                    print(Fore.GREEN + "Posición cerrada exitosamente." + Fore.RESET)
+                    closed_position = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Posición cerrada exitosamente."
+                    write_messages(closed_position)
+                    print(closed_position)
                     return True
                 else:
-                    print(Fore.RED + f"Error en la API: {data_order.get('retMsg')}" + Fore.RESET)
+                    error_api = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Error en la API: {data_order.get('retMsg')}"
+                    write_messages(error_api)
+                    print(error_api)
 
             else:
-                print(
-                    Fore.RED + f"Error al cerrar la posición (Intento {attempt + 1}/{max_retries}): {response_order.text}" + Fore.RESET)
+                close_error = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                               f"Error al cerrar la posición (Intento {attempt + 1}/{max_retries}): {response_order.text}")
+                write_messages(close_error)
+                print(close_error)
 
         except Exception as e:
-            print(Fore.RED + f"Error al procesar la solicitud (Intento {attempt + 1}/{max_retries}): {e}" + Fore.RESET)
+            request_error = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                             f"Error al procesar la solicitud (Intento {attempt + 1}/{max_retries}): {e}")
+            write_messages(request_error)
+            print(request_error)
 
         time.sleep(wait_time)
 
-    print(Fore.RED + f"No se pudo cerrar la posición después de {max_retries} intentos." + Fore.RESET)
+    close_error = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                   f"No se pudo cerrar la posición después de {max_retries} intentos.")
+    write_messages(close_error)
+    print(close_error)
     return False
 
 def is_position_open(symbol, api_key, api_secret, url_position, max_retries=5, wait_time=2):
@@ -263,6 +322,7 @@ def is_position_open(symbol, api_key, api_secret, url_position, max_retries=5, w
     y False en caso contrario.
     """
     url_position = url_position
+    current_time = datetime.now()
 
     for attempt in range(max_retries):
         try:
@@ -290,13 +350,17 @@ def is_position_open(symbol, api_key, api_secret, url_position, max_retries=5, w
             response = requests.get(url_position, headers=headers, params=params)
 
             if response.status_code != 200:
-                print(f"Error al obtener posición: {response.text}")
+                error_message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Error al obtener posición: {response.text}"
+                write_messages(error_message)
+                print(error_message)
                 time.sleep(wait_time)
                 continue
 
             data = response.json()
             if data.get("retCode") != 0:
-                print(f"Error en la API: {data.get('retMsg')}")
+                error_api = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Error en la API: {data.get('retMsg')}"
+                write_messages(error_api)
+                print(error_api)
                 time.sleep(wait_time)
                 continue
 
@@ -315,8 +379,14 @@ def is_position_open(symbol, api_key, api_secret, url_position, max_retries=5, w
                 return False
 
         except Exception as e:
-            print(f"Error al consultar la posición (Intento {attempt + 1}/{max_retries}): {e}")
+            position_error = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                              f"Error al consultar la posición (Intento {attempt + 1}/{max_retries}): {e}")
+            write_messages(position_error)
+            print(position_error)
             time.sleep(wait_time)
 
-    print("No se pudo verificar la posición después de varios intentos.")
+    position_error = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                      "No se pudo verificar la posición después de varios intentos.")
+    write_messages(position_error)
+    print(position_error)
     return False
