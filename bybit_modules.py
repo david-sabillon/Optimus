@@ -20,9 +20,7 @@ def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
         'interval': interval,
         'limit': limit
     }
-    error_message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} no se recibió una respuesta válida de Bybit"
-    write_messages(error_message)
-    print(error_message)
+    error_message = f'No se recibió una respuesta válida de Bybit'
 
     for attempt in range(max_retries):
         try:
@@ -111,6 +109,7 @@ def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
             time.sleep(delay)
 
     raise RuntimeError(
+        f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
         f"Bybit no devolvió velas para {symbol} ({interval}) después de "
         f"{max_retries} intentos: {error_message}"
     )
