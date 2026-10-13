@@ -1,5 +1,6 @@
 # Credenciales y configuración local
 parameters.json
+parameters*
 .env
 .env.*
 *.pem

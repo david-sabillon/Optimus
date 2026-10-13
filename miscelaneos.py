@@ -12,7 +12,6 @@ def send_telegram_notification(message, tg_bot_token, tg_chat_id):
     except Exception as e:
         print(f"Error al enviar mensaje a Telegram: {e}")
 
-
 def write_messages(messages):
     # 1. Obtenemos la ruta del archivo que se está ejecutando
     current_path = Path(__file__).resolve()
@@ -44,4 +43,3 @@ def parameters_file():
     url_position = parameters["url_position"],
     tg_bot_token = parameters["bot_token"],
     tg_chat_id = parameters["chat_id"])
-
