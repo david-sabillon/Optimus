@@ -45,28 +45,32 @@ def activacion(symbols):
                 # Comienza la logica condicional para comprobar direccion de posicion abierta o señal de entrada
                 if comprobacion == "Buy":
                     if antepenultim_h == 1 and penultim_h == 0:
-                        message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Posicion ALCISTA. Se produce señal de salida de la posicion."
+                        message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                   f"Posicion ALCISTA. Se produce señal de salida de la posicion.")
                         print(message)
                         write_messages(message)
                         send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url, parameters.url_position)
                         send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                         time.sleep(2)
                     else:
-                        message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Posicion ALCISTA activa y sin cambios. Se mantiene la posicion."
+                        message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                   f"Posicion ALCISTA activa y sin cambios. Se mantiene la posicion.")
                         print(message)
                         write_messages(message)
                         time.sleep(2)
                         continue
                 elif comprobacion == "Sell":
                     if antepenultim_h == 0 and penultim_h == 1:
-                        message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Posicion BAJISTA. Se produce señal de salida de la posicion."
+                        message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                   f"Posicion BAJISTA. Se produce señal de salida de la posicion.")
                         print(message)
                         write_messages(message)
                         send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url, parameters.url_position)
                         send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                         time.sleep(2)
                     else:
-                        message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Posicion BAJISTA activa y sin cambios. Se mantiene la posicion."
+                        message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                   f"Posicion BAJISTA activa y sin cambios. Se mantiene la posicion.")
                         print(message)
                         write_messages(message)
                         time.sleep(2)
@@ -75,21 +79,24 @@ def activacion(symbols):
                 # Si no hay orden abierta, se comprueban las condiciones de entrada
                 else:
                     if last_w == 1 and last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
-                        message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Condiciones de entrada favorables. Se procede con envio de orden ALCISTA."
+                        message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                   f"Condiciones de entrada favorables. Se procede con envio de orden ALCISTA.")
                         print(message)
                         write_messages(message)
                         send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url)
                         send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                         time.sleep(2)
                     elif last_w == 0 and last_d == 0 and (antepenultim_h == 1 and penultim_h == 0):
-                        message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Condiciones de entrada favorables. Se procede con envio de orden BAJISTA."
+                        message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                   f"Condiciones de entrada favorables. Se procede con envio de orden BAJISTA.")
                         print(message)
                         write_messages(message)
                         send_order_to_bybit(symbol,"Sell", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url)
                         send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                         time.sleep(2)
                     else:
-                        message = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Sin señales de activacion. Se reinicia el ciclo de comprobacion dentro de cuatro horas."
+                        message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                   f"Sin señales de activacion. Se reinicia el ciclo de comprobacion dentro de cuatro horas.")
                         print(message)
                         write_messages(message)
                         time.sleep(2)
