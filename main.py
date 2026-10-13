@@ -13,7 +13,7 @@ def activacion(symbols):
     print(f"Iniciando sistema de Trading Optimus")
     while True:
         current_time = datetime.now()
-        if current_time.hour in (2, 6, 10, 14, 18, 22, 9) and current_time.minute == 58 and current_time.second == 3:
+        if current_time.hour in (2, 6, 10, 14, 18, 22) and current_time.minute == 0 and current_time.second == 10:
 
             for symbol in symbols:
                 # Se extrae los parametros segun que simbolo se itera
