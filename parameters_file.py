@@ -15,10 +15,11 @@ def parameters_btcusdt():
     api_secret = parameters["api_secret"],
     software = parameters["software"],
     qty = parameters["qty"],
-    url = parameters["url"],
-    url_position = parameters["url_position"],
+    url = parameters["url_demo"],
+    url_position = parameters["url_position_demo"],
     tg_bot_token = parameters["bot_token"],
     tg_chat_id = parameters["chat_id"])
+
 
 def parameters_xauusdt():
     parameter_file = Path(__file__).parent / "json_parameters" / "parameters_xauusdt.json"
@@ -33,8 +34,8 @@ def parameters_xauusdt():
     api_secret = parameters["api_secret"],
     software = parameters["software"],
     qty = parameters["qty"],
-    url = parameters["url"],
-    url_position = parameters["url_position"],
+    url = parameters["url_demo"],
+    url_position = parameters["url_position_demo"],
     tg_bot_token = parameters["bot_token"],
     tg_chat_id = parameters["chat_id"])
 
@@ -52,7 +53,7 @@ def parameters_clusdt():
     api_secret = parameters["api_secret"],
     software = parameters["software"],
     qty = parameters["qty"],
-    url = parameters["url"],
-    url_position = parameters["url_position"],
+    url = parameters["url_demo"],
+    url_position = parameters["url_position_demo"],
     tg_bot_token = parameters["bot_token"],
     tg_chat_id = parameters["chat_id"])
