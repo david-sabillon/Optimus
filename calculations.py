@@ -1,8 +1,6 @@
 import time
 
 from bybit_modules import get_kline_data
-from datetime import datetime, timezone
-
 
 HISTORICAL_CANDLES = 20
 
