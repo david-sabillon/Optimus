@@ -54,7 +54,7 @@ def activacion(symbols):
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url,
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                            time.sleep(2)update calculations
+                            time.sleep(2)
                             continue
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
