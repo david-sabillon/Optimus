@@ -54,7 +54,7 @@ def activacion(symbols):
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url,
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                            time.sleep(2)
+                            time.sleep(2)update calculations
                             continue
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -85,7 +85,6 @@ def activacion(symbols):
 
                 else:
                     # Comienza la logica condicional para comprobar direccion de posicion abierta o señal de entrada en cuatro horas
-                    print('llega aqui?')
                     if comprobacion == "Buy":
                         if antepenultim_h == 1 and penultim_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
