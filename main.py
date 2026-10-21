@@ -146,4 +146,6 @@ def activacion(symbols):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    activacion(['BTCUSDT', 'CLUSDT', 'XAUUSDT'])
+    activacion(['BTCUSDT', 'TSLAUSDT', 'TSMUSDT', 'INTCUSDT', 'HOODUSDT', 'METAUSDT', 'GOOGLUSDT', 'AMZNUSDT', 'SNDKUSDT',
+                'AAPLUSDT', 'PLTRUSDT', 'MSTRUSDT', 'COINUSDT', 'NVDAUSDT', 'CSCOUSDT', 'ORCLUSDT', 'EWYUSDT', 'EWJUSDT',
+                'BABAUSDT', 'SPYUSDT', 'SOXLUSDT', 'SPCXUSDT', 'NOKIAUSDT', 'HYUNDAIUSDT', 'EURUSDUSDT', 'XAUUSDT', 'CLUSDT'])

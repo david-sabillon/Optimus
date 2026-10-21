@@ -114,7 +114,7 @@ def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
         f"{max_retries} intentos: {error_message}"
     )
 
-def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries=5, wait_time=2):
+def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries=5, wait_time=5):
     """Envía una orden de mercado al API de Bybit con reintentos en caso de error."""
     current_time = datetime.now()
 
@@ -197,7 +197,7 @@ def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries
     print(network_error)
     return False
 
-def send_close_to_bybit(symbol, api_key, api_secret, url, url_position, max_retries=5, wait_time=2):
+def send_close_to_bybit(symbol, api_key, api_secret, url, url_position, max_retries=5, wait_time=5):
     """
     Cierra una posición abierta en Bybit enviando una orden de mercado en la dirección opuesta.
     Si la API no responde correctamente, reintenta hasta `max_retries` veces con `wait_time` segundos de espera.
@@ -314,7 +314,7 @@ def send_close_to_bybit(symbol, api_key, api_secret, url, url_position, max_retr
     print(close_error)
     return False
 
-def is_position_open(symbol, api_key, api_secret, url_position, max_retries=5, wait_time=2):
+def is_position_open(symbol, api_key, api_secret, url_position, max_retries=5, wait_time=3):
     """
     Consulta en Bybit si hay una posición abierta para el símbolo dado.
     Devuelve "Buy" o "Sell" si hay posición abierta (size > 0),
