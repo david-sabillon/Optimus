@@ -16,12 +16,9 @@ def activacion(symbols):
         if current_time.minute == 1 and current_time.second == 10:
             for symbol in symbols:
                 # Se extrae los parametros segun que simbolo se itera
-                if symbol == "BTCUSDT":
-                    parameters = parameters_btcusdt()
-                elif symbol == "CLUSDT":
-                    parameters = parameters_clusdt()
-                elif symbol == "XAUUSDT":
-                    parameters = parameters_xauusdt()
+                symbol_minus = symbol.lower()
+                parameters_name = "parameters_" + symbol_minus
+                parameters = globals()[parameters_name]()
 
                 # Se comprueba si hay una orden abierta
                 comprobacion = is_position_open(symbol, parameters.api_key, parameters.api_secret, parameters.url_position)
@@ -149,4 +146,4 @@ def activacion(symbols):
 if __name__ == '__main__':
     activacion(['BTCUSDT', 'TSLAUSDT', 'TSMUSDT', 'INTCUSDT', 'HOODUSDT', 'METAUSDT', 'GOOGLUSDT', 'AMZNUSDT', 'SNDKUSDT',
                 'AAPLUSDT', 'PLTRUSDT', 'MSTRUSDT', 'COINUSDT', 'NVDAUSDT', 'CSCOUSDT', 'ORCLUSDT', 'EWYUSDT', 'EWJUSDT',
-                'BABAUSDT', 'SPYUSDT', 'SOXLUSDT', 'SPCXUSDT', 'NOKIAUSDT', 'HYUNDAIUSDT', 'EURUSDUSDT', 'XAUUSDT', 'CLUSDT'])
+                'BABAUSDT', 'SPYUSDT', 'SOXLUSDT', 'SPCXUSDT', 'NOKIAUSDT', 'HYUNDAIUSDT', 'XAUUSDT', 'CLUSDT'])
