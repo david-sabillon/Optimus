@@ -16,8 +16,7 @@ def activacion(symbols):
         if current_time.minute == 1 and current_time.second == 10:
             for symbol in symbols:
                 # Se extrae los parametros segun que simbolo se itera
-                symbol_minus = symbol.lower()
-                parameters_name = "parameters_" + symbol_minus
+                parameters_name = "parameters_" + symbol.lower()
                 parameters = globals()[parameters_name]()
 
                 # Se comprueba si hay una orden abierta
@@ -145,5 +144,5 @@ def activacion(symbols):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     activacion(['BTCUSDT', 'TSLAUSDT', 'TSMUSDT', 'INTCUSDT', 'HOODUSDT', 'METAUSDT', 'GOOGLUSDT', 'AMZNUSDT', 'SNDKUSDT',
-                'AAPLUSDT', 'PLTRUSDT', 'MSTRUSDT', 'COINUSDT', 'NVDAUSDT', 'CSCOUSDT', 'ORCLUSDT', 'EWYUSDT', 'EWJUSDT',
+                'AAPLUSDT', 'PLTRUSDT', 'MSTRUSDT', 'COINUSDT', 'NVDAUSDT', 'CSCOUSDT', 'ORCLUSDT', 'EWYUSDT',
                 'BABAUSDT', 'SPYUSDT', 'SOXLUSDT', 'SPCXUSDT', 'NOKIAUSDT', 'HYUNDAIUSDT', 'XAUUSDT', 'CLUSDT'])
