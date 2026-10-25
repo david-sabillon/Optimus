@@ -13,7 +13,7 @@ def activacion(symbols):
     print(f"Iniciando sistema de Trading Optimus")
     while True:
         current_time = datetime.now()
-        if current_time.minute == 1 and current_time.second == 10:
+        if current_time.minute == 1 and current_time.second == 10 and current_time.weekday() not in (5, 6):
             for symbol in symbols:
                 # Se extrae los parametros segun que simbolo se itera
                 parameters_name = "parameters_" + symbol.lower()
@@ -22,8 +22,7 @@ def activacion(symbols):
                 # Se comprueba si hay una orden abierta
                 comprobacion = is_position_open(symbol, parameters.api_key, parameters.api_secret, parameters.url_position)
                 # Descarga datos si hay posicion abierta o esta en el ciclo de cuatro horas
-                if (((comprobacion == "Buy" or comprobacion == "Sell") or current_time.hour in (2, 6, 10, 14, 18, 22))
-                        and current_time.weekday() not in (5, 6)):
+                if (comprobacion == "Buy" or comprobacion == "Sell") or current_time.hour in (2, 6, 10, 14, 18, 22):
                     # Descarga los datos historicos en las tres temporalidades
                     try:
                         (
@@ -40,7 +39,7 @@ def activacion(symbols):
                         continue
 
                 # Comprobacion cada hora de posiciones abiertas que vayan contra tendencia antes del cierre de la vela
-                if current_time.hour in (0, 1, 3, 4, 5, 7, 8, 9, 11, 12, 13, 15, 16, 17, 19, 20, 21, 23) and current_time.weekday() not in (5, 6):
+                if current_time.hour in (0, 1, 3, 4, 5, 7, 8, 9, 11, 12, 13, 15, 16, 17, 19, 20, 21, 23):
                     if comprobacion == "Buy":
                         if penultim_h == 1 and last_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
