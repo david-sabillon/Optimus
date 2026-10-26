@@ -41,7 +41,7 @@ def activacion(symbols):
                 # Comprobacion cada hora de posiciones abiertas que vayan contra tendencia antes del cierre de la vela
                 if current_time.hour in (0, 1, 3, 4, 5, 7, 8, 9, 11, 12, 13, 15, 16, 17, 19, 20, 21, 23):
                     if comprobacion == "Buy":
-                        if penultim_h == 1 and last_h == 0:
+                        if last_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion ALCISTA. Vela en desarrollo bajista. Se envia orden de salida de la posicion.")
                             print(message)
@@ -60,7 +60,7 @@ def activacion(symbols):
                             continue
 
                     elif comprobacion == "Sell":
-                        if penultim_h == 0 and last_h == 1:
+                        if last_h == 1:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion BAJISTA. Vela en desarrollo alcista. Se envia orden de salida de la posicion.")
                             print(message)
