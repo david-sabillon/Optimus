@@ -81,7 +81,7 @@ def activacion(symbols):
                 else:
                     # Comienza la logica condicional para comprobar direccion de posicion abierta o señal de entrada en cuatro horas
                     if comprobacion == "Buy":
-                        if antepenultim_h == 1 and penultim_h == 0:
+                        if penultim_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion ALCISTA. Se produce señal de salida de la posicion.")
                             print(message)
@@ -97,7 +97,7 @@ def activacion(symbols):
                             time.sleep(2)
                             continue
                     elif comprobacion == "Sell":
-                        if antepenultim_h == 0 and penultim_h == 1:
+                        if penultim_h == 1:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion BAJISTA. Se produce señal de salida de la posicion.")
                             print(message)
