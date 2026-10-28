@@ -11,6 +11,7 @@ def parameters_btcusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status = parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -29,6 +30,7 @@ def parameters_xauusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -47,6 +49,7 @@ def parameters_clusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -65,6 +68,7 @@ def parameters_tslausdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -83,6 +87,7 @@ def parameters_aaplusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -101,6 +106,7 @@ def parameters_amznusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -119,6 +125,7 @@ def parameters_babausdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -137,6 +144,7 @@ def parameters_coinusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -155,6 +163,7 @@ def parameters_cscousdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -173,6 +182,7 @@ def parameters_ewyusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -191,6 +201,7 @@ def parameters_googlusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -209,6 +220,7 @@ def parameters_hoodusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -227,6 +239,7 @@ def parameters_hyundaiusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -245,6 +258,7 @@ def parameters_intcusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -263,6 +277,7 @@ def parameters_metausdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -281,6 +296,7 @@ def parameters_mstrusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -299,6 +315,7 @@ def parameters_nokiausdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -317,6 +334,7 @@ def parameters_nvdausdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -335,6 +353,7 @@ def parameters_orclusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -353,6 +372,7 @@ def parameters_pltrusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -371,6 +391,7 @@ def parameters_sndkusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -389,6 +410,7 @@ def parameters_soxlusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -407,6 +429,7 @@ def parameters_spcxusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -425,6 +448,7 @@ def parameters_spyusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],
@@ -443,6 +467,7 @@ def parameters_tsmusdt():
     return SimpleNamespace(
     symbol = parameters["symbol"],
     crypto = parameters["crypto"],
+    status=parameters["status"],
     api_key = parameters["api_key"],
     api_secret = parameters["api_secret"],
     software = parameters["software"],

@@ -15,11 +15,18 @@ def activacion(symbols):
         current_time = datetime.now()
         if current_time.minute == 1 and current_time.second == 10 and current_time.weekday() not in (5, 6):
             for symbol in symbols:
+
                 # Se extrae los parametros segun que simbolo se itera
                 parameters_name = "parameters_" + symbol.lower()
                 parameters = globals()[parameters_name]()
 
-                # Se comprueba si hay una orden abierta
+                # Se realiza comprobacion si el simbolo esta marcado como activo en el json
+                if parameters.status == 1:
+                    pass
+                else:
+                    continue
+
+            # Se comprueba si hay una orden abierta
                 comprobacion = is_position_open(symbol, parameters.api_key, parameters.api_secret, parameters.url_position)
                 # Descarga datos si hay posicion abierta o esta en el ciclo de cuatro horas
                 if (comprobacion == "Buy" or comprobacion == "Sell") or current_time.hour in (2, 6, 10, 14, 18, 22):
