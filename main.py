@@ -28,6 +28,8 @@ def activacion(symbols):
 
             # Se comprueba si hay una orden abierta
                 comprobacion = is_position_open(symbol, parameters.api_key, parameters.api_secret, parameters.url_position)
+                comprobacion_prime = is_position_open(symbol, parameters.api_key, parameters.api_secret,
+                                                parameters.url_position) # INSTANCIA SECUNDARIA
                 # Descarga datos si hay posicion abierta o esta en el ciclo de cuatro horas
                 if (comprobacion == "Buy" or comprobacion == "Sell") or current_time.hour in (2, 6, 10, 14, 18, 22):
                     # Descarga los datos historicos en las tres temporalidades
@@ -57,14 +59,12 @@ def activacion(symbols):
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
-                            continue
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"La posicion continua en tendencia alcista. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
-                            continue
 
                     elif comprobacion == "Sell":
                         if last_h == 1:
@@ -76,14 +76,28 @@ def activacion(symbols):
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
-                            continue
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"La posicion continua en tendencia bajista. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
-                            continue
+
+
+                    # COMPROBACION PARA LA POSICION DE LA INSTANCIA SECUNDARIA PRIME EN 1 HORA
+                    if comprobacion_prime == "Buy":  # INSTANCIA SECUNDARIA
+                        if last_h == 1:
+                            send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
+                                                parameters.url,
+                                                parameters.url_position)
+                            time.sleep(2)
+                    elif comprobacion_prime == "Sell":
+                        if last_h == 0:
+                            send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
+                                                parameters.url,
+                                                parameters.url_position)
+                            time.sleep(2)
+
 
                 else:
                     # Comienza la logica condicional para comprobar direccion de posicion abierta o señal de entrada en cuatro horas
@@ -102,7 +116,7 @@ def activacion(symbols):
                             print(message)
                             write_messages(message)
                             time.sleep(2)
-                            continue
+
                     elif comprobacion == "Sell":
                         if penultim_h == 1:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -118,7 +132,21 @@ def activacion(symbols):
                             print(message)
                             write_messages(message)
                             time.sleep(2)
-                            continue
+
+                    # COMPROBACION PARA LA POSICION DE LA INSTANCIA SECUNDARIA PRIME EN 4 HORA
+                    if comprobacion_prime == "Buy":  # INSTANCIA SECUNDARIA
+                        if penultim_h == 1:
+                            send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
+                                                parameters.url,
+                                                parameters.url_position)
+                            time.sleep(2)
+                    elif comprobacion_prime == "Sell":
+                        if penultim_h == 0:
+                            send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
+                                                parameters.url,
+                                                parameters.url_position)
+                            time.sleep(2)
+
 
                     # Si no hay orden abierta, se comprueban las condiciones de entrada
                     else:
@@ -128,6 +156,7 @@ def activacion(symbols):
                             print(message)
                             write_messages(message)
                             send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url)
+                            send_order_to_bybit(symbol, "Sell", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url) # INSTANCIA SECUNDARIA
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
                         elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0):
@@ -136,6 +165,7 @@ def activacion(symbols):
                             print(message)
                             write_messages(message)
                             send_order_to_bybit(symbol,"Sell", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url)
+                            send_order_to_bybit(symbol, "Buy", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url) # INSTANCIA SECUNDARIA
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
                         else:
