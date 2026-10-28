@@ -122,7 +122,7 @@ def activacion(symbols):
 
                     # Si no hay orden abierta, se comprueban las condiciones de entrada
                     else:
-                        if last_w == 1 and last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
+                        if last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Condiciones de entrada favorables. Se procede con envio de orden ALCISTA.")
                             print(message)
@@ -130,7 +130,7 @@ def activacion(symbols):
                             send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
-                        elif last_w == 0 and last_d == 0 and (antepenultim_h == 1 and penultim_h == 0):
+                        elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0):
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Condiciones de entrada favorables. Se procede con envio de orden BAJISTA.")
                             print(message)
