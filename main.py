@@ -28,7 +28,7 @@ def activacion(symbols):
 
             # Se comprueba si hay una orden abierta
                 comprobacion = is_position_open(symbol, parameters.api_key, parameters.api_secret, parameters.url_position)
-                comprobacion_prime = is_position_open(symbol, parameters.api_key, parameters.api_secret,
+                comprobacion_prime = is_position_open(symbol, parameters.api_key_prime, parameters.api_secret_prime,
                                                 parameters.url_position) # INSTANCIA SECUNDARIA
                 # Descarga datos si hay posicion abierta o esta en el ciclo de cuatro horas
                 if (comprobacion == "Buy" or comprobacion == "Sell") or current_time.hour in (1, 5, 9, 13, 17, 21):
