@@ -31,7 +31,7 @@ def activacion(symbols):
                 comprobacion_prime = is_position_open(symbol, parameters.api_key, parameters.api_secret,
                                                 parameters.url_position) # INSTANCIA SECUNDARIA
                 # Descarga datos si hay posicion abierta o esta en el ciclo de cuatro horas
-                if (comprobacion == "Buy" or comprobacion == "Sell") or current_time.hour in (2, 6, 10, 14, 18, 22):
+                if (comprobacion == "Buy" or comprobacion == "Sell") or current_time.hour in (1, 5, 9, 13, 17, 21):
                     # Descarga los datos historicos en las tres temporalidades
                     try:
                         (
@@ -48,7 +48,7 @@ def activacion(symbols):
                         continue
 
                 # Comprobacion cada hora de posiciones abiertas que vayan contra tendencia antes del cierre de la vela
-                if current_time.hour in (0, 1, 3, 4, 5, 7, 8, 9, 11, 12, 13, 15, 16, 17, 19, 20, 21, 23):
+                if current_time.hour in (0, 2, 3, 4, 6, 7, 8, 10, 11, 12, 14, 15, 16, 18, 19, 20, 22, 23):
                     if comprobacion == "Buy":
                         if last_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
