@@ -5,7 +5,7 @@ import requests
 # Modulos locales
 from calculations import hanking_ashi_bars
 from bybit_modules import send_order_to_bybit, is_position_open, send_close_to_bybit
-from miscelaneos import send_telegram_notification, write_messages
+from miscelaneos import send_telegram_notification, write_messages, asset_sentiment
 from parameters_file import *
 
 

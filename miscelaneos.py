@@ -2,6 +2,68 @@ from types import SimpleNamespace
 import requests
 from pathlib import Path
 import json
+import os
+import time
+from datetime import datetime, timedelta, timezone
+
+
+def asset_sentiment(symbol, max_retries=5, wait_time=5):
+    """Devuelve la tendencia de ``symbol`` según el sentimiento de Marketaux.
+
+    El token debe estar definido en la variable de entorno
+    ``MARKETAUX_API_TOKEN``. Los umbrales son estrictos: 0.30 y -0.30 se
+    consideran ``neutro``.
+    """
+    MARKETAUX_SENTIMENT_URL = "https://api.marketaux.com/v1/news/all"
+    api_token = os.getenv("MARKETAUX_API_TOKEN")
+    if not api_token:
+        raise ValueError("Falta definir la variable de entorno MARKETAUX_API_TOKEN.")
+
+    normalized_symbol = symbol.strip().upper()
+    if not normalized_symbol:
+        raise ValueError("El símbolo del activo no puede estar vacío.")
+
+    published_after = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime(
+        "%Y-%m-%dT%H:%M"
+    )
+
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(
+                MARKETAUX_SENTIMENT_URL,
+                params={
+                    "api_token": api_token,
+                    "symbols": normalized_symbol,
+                    "filter_entities": "true",
+                    "must_have_entities": "true",
+                    "published_after": published_after,
+                },
+                timeout=10,
+            )
+            if not response.ok:
+                raise RuntimeError(f"Marketaux respondió con HTTP {response.status_code}.")
+
+            articles = response.json().get("data", [])
+            sentiments = [
+                entity["sentiment_score"]
+                for article in articles
+                for entity in article.get("entities", [])
+                if entity.get("symbol", "").upper() == normalized_symbol
+                and entity.get("sentiment_score") is not None
+            ]
+            sentiment = sum(sentiments) / len(sentiments) if sentiments else None
+
+            if sentiment is not None and sentiment > 0.30:
+                return "alcista"
+            if sentiment is not None and sentiment < -0.30:
+                return "bajista"
+            return "neutro"
+        except (requests.RequestException, RuntimeError) as error:
+            if attempt == max_retries - 1:
+                raise RuntimeError(
+                    f"No se pudo consultar Marketaux después de {max_retries} intentos."
+                ) from error
+            time.sleep(wait_time)
 
 def send_telegram_notification(message, tg_bot_token, tg_chat_id):
     bot_token = tg_bot_token
