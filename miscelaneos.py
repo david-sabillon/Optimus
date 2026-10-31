@@ -57,10 +57,10 @@ def asset_sentiment(symbol, max_retries=5, wait_time=5):
             sentiment = sum(sentiments) / len(sentiments)
 
             if sentiment is not None and sentiment > 0.30:
-                return "alcista"
+                return f"alcista - {sentiment:.2f}"
             if sentiment is not None and sentiment < -0.30:
-                return "bajista"
-            return "neutro"
+                return f"bajista - {sentiment:.2f}"
+            return f"neutro - {sentiment:.2f}"
         except (requests.RequestException, RuntimeError) as error:
             if attempt == max_retries - 1:
                 raise RuntimeError(
