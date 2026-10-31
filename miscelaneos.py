@@ -51,7 +51,10 @@ def asset_sentiment(symbol, max_retries=5, wait_time=5):
                 if entity.get("symbol", "").upper() == normalized_symbol
                 and entity.get("sentiment_score") is not None
             ]
-            sentiment = sum(sentiments) / len(sentiments) if sentiments else None
+            if not sentiments:
+                return "sin_datos"
+
+            sentiment = sum(sentiments) / len(sentiments)
 
             if sentiment is not None and sentiment > 0.30:
                 return "alcista"

@@ -151,8 +151,9 @@ def activacion(symbols):
                     # Si no hay orden abierta, se comprueban las condiciones de entrada
                     else:
                         if last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
+                            sentiment = asset_sentiment(parameters.asset)
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Condiciones de entrada favorables. Se procede con envio de orden ALCISTA.")
+                                       f"Condiciones de entrada favorables. Se procede con envio de orden ALCISTA. Sentimiento: {sentiment}")
                             print(message)
                             write_messages(message)
                             send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url)
@@ -160,8 +161,9 @@ def activacion(symbols):
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
                         elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0):
+                            sentiment = asset_sentiment(parameters.asset)
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Condiciones de entrada favorables. Se procede con envio de orden BAJISTA.")
+                                       f"Condiciones de entrada favorables. Se procede con envio de orden BAJISTA. Sentimiento: {sentiment}")
                             print(message)
                             write_messages(message)
                             send_order_to_bybit(symbol,"Sell", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url)
