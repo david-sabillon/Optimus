@@ -177,7 +177,7 @@ def activacion(symbols):
                             write_messages(message)
                             time.sleep(2)
                             continue
-                time.sleep(1)
+        time.sleep(1)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
