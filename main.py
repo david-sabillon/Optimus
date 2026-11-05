@@ -5,7 +5,7 @@ import requests
 # Modulos locales
 from calculations import hanking_ashi_bars
 from bybit_modules import send_order_to_bybit, is_position_open, send_close_to_bybit
-from miscelaneos import send_telegram_notification, write_messages, asset_sentiment
+from miscelaneos import send_telegram_notification, write_messages, asset_sentiment, thresholds
 from parameters_file import *
 
 
@@ -152,6 +152,7 @@ def activacion(symbols):
                     else:
                         if last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
                             sentiment = asset_sentiment(parameters.asset)
+                            # high, low = thresholds(symbol, parameters.qty)
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Condiciones de entrada favorables. Se procede con envio de orden ALCISTA. Sentimiento: {sentiment}")
                             print(message)

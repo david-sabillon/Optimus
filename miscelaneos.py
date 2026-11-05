@@ -5,7 +5,7 @@ import json
 import os
 import time
 from datetime import datetime, timedelta, timezone
-
+from bybit_modules import get_kline_data
 
 def asset_sentiment(symbol, max_retries=5, wait_time=5):
     """Devuelve la tendencia de ``symbol`` según el sentimiento de Marketaux.
@@ -108,3 +108,25 @@ def parameters_file():
     url_position = parameters["url_position"],
     tg_bot_token = parameters["bot_token"],
     tg_chat_id = parameters["chat_id"])
+
+def thresholds(symbol, qty):
+    """Devuelve los precios objetivo para una pérdida o ganancia de 150 USD.
+
+    Para contratos lineales, el PnL se calcula como ``qty * variación_de_precio``.
+    """
+    max_loss_profit = 150
+    qty = float(qty)
+    if qty <= 0:
+        raise ValueError("qty debe ser mayor que cero")
+
+    kline_data = get_kline_data(symbol, interval=240, limit=1)
+    if not kline_data:
+        raise ValueError(f"No se recibió precio actual para {symbol}")
+
+    # En la respuesta de velas de Bybit, el índice 4 corresponde al cierre.
+    current_price = float(kline_data[0][4])
+    price_variation = max_loss_profit / qty
+
+    high = current_price + price_variation
+    low = current_price - price_variation
+    return high, low

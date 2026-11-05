@@ -17,8 +17,8 @@ def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
     params = {
         'category': 'linear',
         'symbol': symbol,
-        'interval': interval,
-        'limit': limit
+        'interval': interval,       # Especifica la temporalidad
+        'limit': limit              # Especifica la cantidad de velas
     }
     error_message = f'No se recibió una respuesta válida de Bybit'
 
@@ -133,6 +133,8 @@ def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries
                 "timeInForce": "IOC",  # Ejecutar inmediatamente
                 "reduceOnly": "false",
                 "closeOnTrigger": "false",
+                # "stopLoss": str(stop),
+                # "takeProfit": str(take_profit),
             }
 
             # Serializar el cuerpo de la solicitud
