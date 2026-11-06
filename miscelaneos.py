@@ -5,7 +5,7 @@ import json
 import os
 import time
 from datetime import datetime, timedelta, timezone
-from bybit_modules import get_kline_data
+
 
 def asset_sentiment(symbol, max_retries=5, wait_time=5):
     """Devuelve la tendencia de ``symbol`` según el sentimiento de Marketaux.
@@ -110,6 +110,7 @@ def parameters_file():
     tg_chat_id = parameters["chat_id"])
 
 def thresholds(symbol, qty, max_threshold):
+    from bybit_modules import get_kline_data
     """Devuelve los precios objetivo para una pérdida o ganancia de 150 USD.
 
     Para contratos lineales, el PnL se calcula como ``qty * variación_de_precio``.
