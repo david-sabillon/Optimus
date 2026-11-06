@@ -110,11 +110,11 @@ def parameters_file():
     tg_chat_id = parameters["chat_id"])
 
 def thresholds(symbol, qty, max_threshold):
-    from bybit_modules import get_kline_data
     """Devuelve los precios objetivo para una pérdida o ganancia de 150 USD.
 
     Para contratos lineales, el PnL se calcula como ``qty * variación_de_precio``.
     """
+    from bybit_modules import get_kline_data
     max_loss_profit = max_threshold
     qty = float(qty)
     if qty <= 0:
