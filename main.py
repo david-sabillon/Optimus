@@ -152,23 +152,24 @@ def activacion(symbols):
                     else:
                         if last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
                             sentiment = asset_sentiment(parameters.asset)
-                            # high, low = thresholds(symbol, parameters.qty)
+                            high, low = thresholds(symbol, parameters.qty, max_threshold=150)
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Condiciones de entrada favorables. Se procede con envio de orden ALCISTA. Sentimiento: {sentiment}")
                             print(message)
                             write_messages(message)
-                            send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url)
-                            send_order_to_bybit(symbol, "Sell", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url) # INSTANCIA SECUNDARIA
+                            send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=low, takeprofit=high)
+                            send_order_to_bybit(symbol, "Sell", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=high, takeprofit=low) # INSTANCIA SECUNDARIA
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
                         elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0):
                             sentiment = asset_sentiment(parameters.asset)
+                            high, low = thresholds(symbol, parameters.qty, max_threshold=150)
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Condiciones de entrada favorables. Se procede con envio de orden BAJISTA. Sentimiento: {sentiment}")
                             print(message)
                             write_messages(message)
-                            send_order_to_bybit(symbol,"Sell", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url)
-                            send_order_to_bybit(symbol, "Buy", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url) # INSTANCIA SECUNDARIA
+                            send_order_to_bybit(symbol,"Sell", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=high, takeprofit=low)
+                            send_order_to_bybit(symbol, "Buy", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=low, takeprofit=high) # INSTANCIA SECUNDARIA
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
                         else:

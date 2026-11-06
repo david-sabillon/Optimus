@@ -114,7 +114,7 @@ def get_kline_data(symbol, interval, limit, max_retries=5, wait_time=5):
         f"{max_retries} intentos: {error_message}"
     )
 
-def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries=5, wait_time=5):
+def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, stoploss, takeprofit, max_retries=5, wait_time=5):
     """Envía una orden de mercado al API de Bybit con reintentos en caso de error."""
     current_time = datetime.now()
 
@@ -133,8 +133,8 @@ def send_order_to_bybit(symbol, side, api_key, api_secret, qty, url, max_retries
                 "timeInForce": "IOC",  # Ejecutar inmediatamente
                 "reduceOnly": "false",
                 "closeOnTrigger": "false",
-                # "stopLoss": str(stop),
-                # "takeProfit": str(take_profit),
+                "stopLoss": str(stoploss),
+                "takeProfit": str(takeprofit),
             }
 
             # Serializar el cuerpo de la solicitud

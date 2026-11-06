@@ -109,22 +109,22 @@ def parameters_file():
     tg_bot_token = parameters["bot_token"],
     tg_chat_id = parameters["chat_id"])
 
-def thresholds(symbol, qty):
+def thresholds(symbol, qty, max_threshold):
     """Devuelve los precios objetivo para una pérdida o ganancia de 150 USD.
 
     Para contratos lineales, el PnL se calcula como ``qty * variación_de_precio``.
     """
-    max_loss_profit = 150
+    max_loss_profit = max_threshold
     qty = float(qty)
     if qty <= 0:
         raise ValueError("qty debe ser mayor que cero")
 
-    kline_data = get_kline_data(symbol, interval=240, limit=1)
+    kline_data = get_kline_data(symbol, interval=240, limit=2)
     if not kline_data:
-        raise ValueError(f"No se recibió precio actual para {symbol}")
+        raise ValueError(f"thresholds: No se recibió precio actual para {symbol}")
 
     # En la respuesta de velas de Bybit, el índice 4 corresponde al cierre.
-    current_price = float(kline_data[0][4])
+    current_price = float(kline_data[1][4])
     price_variation = max_loss_profit / qty
 
     high = current_price + price_variation
