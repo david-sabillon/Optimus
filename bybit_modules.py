@@ -1,7 +1,6 @@
 import time
 import hashlib
 import json
-import subprocess
 import hmac
 import requests
 from datetime import datetime
@@ -316,7 +315,6 @@ def is_position_open(symbol, api_key, api_secret, url_position, max_retries=5, w
     Devuelve "Buy" o "Sell" si hay posición abierta (size > 0),
     y False en caso contrario.
     """
-    url_position = url_position
     current_time = datetime.now()
 
     for attempt in range(max_retries):
@@ -384,89 +382,4 @@ def is_position_open(symbol, api_key, api_secret, url_position, max_retries=5, w
                       "No se pudo verificar la posición después de varios intentos.")
     write_messages(position_error)
     print(position_error)
-    return False
-
-def send_order_to_bybit_curl(symbol, side, api_key, api_secret, qty, url, stoploss, takeprofit, max_retries=5, wait_time=5):
-    """Envía una orden de mercado al API de Bybit con reintentos en caso de error."""
-    current_time = datetime.now()
-
-    for attempt in range(max_retries):
-        try:
-            timestamp = str(int(time.time() * 1000))  # Tiempo en milisegundos
-            recv_window = "5000"
-
-            # Crear el cuerpo de la solicitud para una orden de mercado
-            order_data = {
-                "category": "linear",
-                "symbol": symbol,
-                "side": side,  # "Buy" o "Sell"
-                "orderType": "Market",  # Orden de mercado
-                "qty": str(qty),  # Cantidad
-                "timeInForce": "IOC",  # Ejecutar inmediatamente
-                "reduceOnly": "false",
-                "closeOnTrigger": "false",
-                "stopLoss": str(stoploss),
-                "takeProfit": str(takeprofit),
-            }
-
-            # Serializar el cuerpo de la solicitud
-            body_json = json.dumps(order_data, separators=(',', ':'))
-
-            # Generar firma
-            payload = f"{timestamp}{api_key}{recv_window}{body_json}"
-            signature = hmac.new(
-                bytes(api_secret, 'utf-8'),
-                bytes(payload, 'utf-8'),
-                hashlib.sha256
-            ).hexdigest()
-
-            # Configurar headers
-            headers = {
-                "Content-Type": "application/json",
-                "X-BAPI-API-KEY": api_key,
-                "X-BAPI-TIMESTAMP": timestamp,
-                "X-BAPI-SIGN": signature,
-                "X-BAPI-RECV-WINDOW": recv_window,
-            }
-
-            # Ejecutar la solicitud usando cURL
-            curl_command = [
-                "curl", "-X", "POST", url,
-                "-H", f"X-BAPI-API-KEY: {api_key}",
-                "-H", f"X-BAPI-TIMESTAMP: {timestamp}",
-                "-H", f"X-BAPI-SIGN: {signature}",
-                "-H", f"X-BAPI-RECV-WINDOW: {recv_window}",
-                "-H", "Content-Type: application/json",
-                "-d", body_json
-            ]
-
-            result = subprocess.run(curl_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-            # Procesar respuesta
-            if result.returncode == 0:
-                sent_order = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Orden de mercado enviada exitosamente."
-                write_messages(sent_order)
-                print(sent_order)
-                return True
-            else:
-                network_error = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} Error al enviar la orden (Intento {attempt + 1}/{max_retries})."
-                write_messages(network_error)
-                print(network_error)
-                curl_error = f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} {result.stderr}"
-                write_messages(curl_error)
-                print(curl_error)
-
-        except Exception as e:
-            exception_error = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                               f"Error al procesar la orden (Intento {attempt + 1}/{max_retries}): {e}")
-            write_messages(exception_error)
-            print(exception_error)
-
-        # Esperar antes de reintentar
-        time.sleep(wait_time)
-
-    network_error = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                     f"No se pudo enviar la orden después de {max_retries} intentos.")
-    write_messages(network_error)
-    print(network_error)
     return False

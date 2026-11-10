@@ -131,3 +131,5 @@ def thresholds(symbol, qty, max_threshold):
     high = current_price + price_variation
     low = current_price - price_variation
     return high, low
+
+
