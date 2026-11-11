@@ -150,7 +150,7 @@ def activacion(symbols):
 
                     # Si no hay orden abierta, se comprueban las condiciones de entrada
                     else:
-                        if last_d == 1 and (antepenultim_h == 0 and penultim_h == 1):
+                        if last_d == 0 and (antepenultim_h == 0 and penultim_h == 1): # Diario: Bajista, Señal: Alcista - Entrada(Emily): Bajista
                             # sentiment = asset_sentiment(parameters.asset)
                             high, low = thresholds(symbol, parameters.qty, max_threshold=150)
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -158,10 +158,10 @@ def activacion(symbols):
                             print(message)
                             write_messages(message)
                             send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=low, takeprofit=high)
-                            send_order_to_bybit(symbol, "Sell", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=high, takeprofit=low) # INSTANCIA SECUNDARIA
+                            send_order_to_bybit(symbol, "Sell", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=high, takeprofit=low) # INSTANCIA SECUNDARIA (Emily)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
-                        elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0):
+                        elif last_d == 1 and (antepenultim_h == 1 and penultim_h == 0): # Diario: Alcista, Señal: Bajista - Entrada(Emily): Alcista
                             # sentiment = asset_sentiment(parameters.asset)
                             high, low = thresholds(symbol, parameters.qty, max_threshold=150)
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -169,7 +169,7 @@ def activacion(symbols):
                             print(message)
                             write_messages(message)
                             send_order_to_bybit(symbol,"Sell", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=high, takeprofit=low)
-                            send_order_to_bybit(symbol, "Buy", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=low, takeprofit=high) # INSTANCIA SECUNDARIA
+                            send_order_to_bybit(symbol, "Buy", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=low, takeprofit=high) # INSTANCIA SECUNDARIA (Emily)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
                         else:
