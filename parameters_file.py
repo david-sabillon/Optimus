@@ -2,6 +2,9 @@ from types import SimpleNamespace
 import json
 from pathlib import Path
 
+# api_key = Valeria
+# api_key_prime = Emily
+
 def parameters_btcusdt():
     parameter_file = Path(__file__).parent / "json_parameters" / "parameters_btcusdt.json"
 

@@ -30,8 +30,11 @@ def activacion(symbols):
                 comprobacion = is_position_open(symbol, parameters.api_key, parameters.api_secret, parameters.url_position)
                 comprobacion_prime = is_position_open(symbol, parameters.api_key_prime, parameters.api_secret_prime,
                                                 parameters.url_position) # INSTANCIA SECUNDARIA
-                # Descarga datos si hay posicion abierta o esta en el ciclo de cuatro horas
-                if (comprobacion == "Buy" or comprobacion == "Sell") or current_time.hour in (1, 5, 9, 13, 17, 21):
+
+                # Solo se Descargara datos si hay posicion abierta o esta en el ciclo de cuatro horas
+                if ((comprobacion == "Buy" or comprobacion == "Sell") or (comprobacion_prime == "Buy" or comprobacion_prime == "Sell")
+                        or current_time.hour in (1, 5, 9, 13, 17, 21)):
+
                     # Descarga los datos historicos en las tres temporalidades
                     try:
                         (
@@ -52,7 +55,7 @@ def activacion(symbols):
                     if comprobacion == "Buy":
                         if last_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion ALCISTA. Vela en desarrollo bajista. Se envia orden de salida de la posicion.")
+                                       f"Posicion ALCISTA (Valeria): Vela en desarrollo bajista. Se envia orden de salida de la posicion.")
                             print(message)
                             write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url,
@@ -61,7 +64,7 @@ def activacion(symbols):
                             time.sleep(2)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"La posicion continua en tendencia alcista. Se reinicia el ciclo de comprobacion dentro de una hora.")
+                                       f"Posicion ALCISTA (Valeria): La posicion continua en tendencia alcista. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
@@ -69,7 +72,7 @@ def activacion(symbols):
                     elif comprobacion == "Sell":
                         if last_h == 1:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion BAJISTA. Vela en desarrollo alcista. Se envia orden de salida de la posicion.")
+                                       f"Posicion BAJISTA (Valeria): Vela en desarrollo alcista. Se envia orden de salida de la posicion.")
                             print(message)
                             write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url,
@@ -78,33 +81,55 @@ def activacion(symbols):
                             time.sleep(2)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"La posicion continua en tendencia bajista. Se reinicia el ciclo de comprobacion dentro de una hora.")
+                                       f"Posicion BAJISTA (Valeria): La posicion continua en tendencia bajista. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
 
 
-                    # COMPROBACION PARA LA POSICION DE LA INSTANCIA SECUNDARIA PRIME EN 1 HORA
+                    # ---------- Comprobacion de la posicion de la instancia secundaria Prime en 1 hora (Emily) ----------
                     if comprobacion_prime == "Buy":  # INSTANCIA SECUNDARIA
                         if last_h == 1:
+                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                       f"Posicion ALCISTA (Emily): Cierre de vela favorable alcista. Se envia orden de salida de la posicion.")
+                            print(message)
+                            write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
                                                 parameters.url,
                                                 parameters.url_position)
+                            send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
+                            time.sleep(2)
+                        else:
+                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                       f"Posicion ALCISTA (Emily): No se presenta vela favorable. Se reinicia el ciclo de comprobacion dentro de una hora.")
+                            print(message)
+                            write_messages(message)
                             time.sleep(2)
                     elif comprobacion_prime == "Sell":
                         if last_h == 0:
+                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                       f"Posicion BAJISTA (Emily): Cierre de vela favorable bajista. Se envia orden de salida de la posicion.")
+                            print(message)
+                            write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
                                                 parameters.url,
                                                 parameters.url_position)
+                            send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
+                            time.sleep(2)
+                        else:
+                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                       f"Posicion BAJISTA (Emily): No se presenta vela favorable. Se reinicia el ciclo de comprobacion dentro de una hora.")
+                            print(message)
+                            write_messages(message)
                             time.sleep(2)
 
 
                 else:
-                    # Comienza la logica condicional para comprobar direccion de posicion abierta o señal de entrada en cuatro horas
+                    # Comienza la logica condicional para comprobar direccion de posicion abierta o señal de entrada en CUATRO HORAS
                     if comprobacion == "Buy":
                         if penultim_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion ALCISTA. Se produce señal de salida de la posicion.")
+                                       f"Posicion ALCISTA: Se produce señal de salida de la posicion.")
                             print(message)
                             write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url, parameters.url_position)
@@ -112,7 +137,7 @@ def activacion(symbols):
                             time.sleep(2)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion ALCISTA activa y sin cambios. Se mantiene la posicion.")
+                                       f"Posicion ALCISTA: activa y sin cambios. Se mantiene la posicion.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
@@ -120,7 +145,7 @@ def activacion(symbols):
                     elif comprobacion == "Sell":
                         if penultim_h == 1:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion BAJISTA. Se produce señal de salida de la posicion.")
+                                       f"Posicion BAJISTA: Se produce señal de salida de la posicion.")
                             print(message)
                             write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url, parameters.url_position)
@@ -128,53 +153,96 @@ def activacion(symbols):
                             time.sleep(2)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion BAJISTA activa y sin cambios. Se mantiene la posicion.")
+                                       f"Posicion BAJISTA: activa y sin cambios. Se mantiene la posicion.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
 
-                    # COMPROBACION PARA LA POSICION DE LA INSTANCIA SECUNDARIA PRIME EN 4 HORA
+                    # -------- Comprobacion para la posicion de la instancia secundaria PRIME en 4 horas (Emily) ---------
                     if comprobacion_prime == "Buy":  # INSTANCIA SECUNDARIA
                         if penultim_h == 1:
+                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                       f"Posicion ALCISTA: Se produce señal de salida de la posicion.")
+                            print(message)
+                            write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
                                                 parameters.url,
                                                 parameters.url_position)
-                            time.sleep(2)
-                    elif comprobacion_prime == "Sell":
-                        if penultim_h == 0:
-                            send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
-                                                parameters.url,
-                                                parameters.url_position)
-                            time.sleep(2)
-
-
-                    # Si no hay orden abierta, se comprueban las condiciones de entrada
-                    else:
-                        if last_d == 0 and (antepenultim_h == 0 and penultim_h == 1): # Diario: Bajista, Señal: Alcista - Entrada(Emily): Bajista
-                            # sentiment = asset_sentiment(parameters.asset)
-                            high, low = thresholds(symbol, parameters.qty, max_threshold=150)
-                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Condiciones de entrada favorables. Se procede con envio de orden ALCISTA.")
-                            print(message)
-                            write_messages(message)
-                            send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=low, takeprofit=high)
-                            send_order_to_bybit(symbol, "Sell", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=high, takeprofit=low) # INSTANCIA SECUNDARIA (Emily)
-                            send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                            time.sleep(2)
-                        elif last_d == 1 and (antepenultim_h == 1 and penultim_h == 0): # Diario: Alcista, Señal: Bajista - Entrada(Emily): Alcista
-                            # sentiment = asset_sentiment(parameters.asset)
-                            high, low = thresholds(symbol, parameters.qty, max_threshold=150)
-                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Condiciones de entrada favorables. Se procede con envio de orden BAJISTA.")
-                            print(message)
-                            write_messages(message)
-                            send_order_to_bybit(symbol,"Sell", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=high, takeprofit=low)
-                            send_order_to_bybit(symbol, "Buy", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=low, takeprofit=high) # INSTANCIA SECUNDARIA (Emily)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(2)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Sin señales de activacion. Se reinicia el ciclo de comprobacion dentro de cuatro horas.")
+                                       f"Posicion ALCISTA: activa y sin cambios. Se mantiene la posicion.")
+                            print(message)
+                            write_messages(message)
+                            time.sleep(2)
+                    elif comprobacion_prime == "Sell":
+                        if penultim_h == 0:
+                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                       f"Posicion BAJISTA: Se produce señal de salida de la posicion.")
+                            print(message)
+                            write_messages(message)
+                            send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
+                                                parameters.url,
+                                                parameters.url_position)
+                            send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
+                            time.sleep(2)
+
+
+                    # SI NO HAY ORDEN ABIERTA, SE COMPRUEBAN LAS CONDICIONES DE ENTRADA EN CUATRO HORAS
+                    else:
+                        if last_d == 1 and (antepenultim_h == 0 and penultim_h == 1): # Diario: Alcista, Señal: Alcista
+                            # sentiment = asset_sentiment(parameters.asset)
+                            high, low = thresholds(symbol, parameters.qty, max_threshold=150)
+                            trend_profile = True if current_time.weekday() in (1, 2, 3) else False
+                            rage_profile = True if current_time.weekday() in (0, 4, 5, 6) else False
+
+                            if trend_profile:
+                                send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=low, takeprofit=high)
+                                message = (
+                                    f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                    f"Posicion ALCISTA (Valeria): Condiciones de entrada favorables. Se procede con envio de orden.")
+                                print(message)
+                                write_messages(message)
+                                send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
+                                time.sleep(2)
+                            elif rage_profile:  # Emily Profile
+                                send_order_to_bybit(symbol, "Sell", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=high, takeprofit=low) # INSTANCIA SECUNDARIA (Emily)
+                                message = (
+                                    f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                    f"Posicion BAJISTA (Emily): Condiciones de entrada favorables. Se procede con envio de orden.")
+                                print(message)
+                                write_messages(message)
+                                send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
+                                time.sleep(2)
+                        elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0): # Diario: Bajista, Señal: Bajista
+                            # sentiment = asset_sentiment(parameters.asset)
+                            high, low = thresholds(symbol, parameters.qty, max_threshold=150)
+                            trend_profile = True if current_time.weekday() in (1, 2, 3) else False
+                            rage_profile = True if current_time.weekday() in (0, 4, 5, 6) else False
+
+                            if trend_profile:
+                                send_order_to_bybit(symbol,"Sell", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=high, takeprofit=low)
+                                message = (
+                                    f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                    f"Posicion BAJISTA (Valeria): Condiciones de entrada favorables. Se procede con envio de orden.")
+                                print(message)
+                                write_messages(message)
+                                send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
+                            elif rage_profile:  # Emily Profile
+                                send_order_to_bybit(symbol, "Buy", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=low, takeprofit=high) # INSTANCIA SECUNDARIA (Emily)
+                                message = (
+                                    f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                    f"Posicion ALCISTA (Emily): Condiciones de entrada favorables. Se procede con envio de orden.")
+                                print(message)
+                                write_messages(message)
+                                send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
+                                time.sleep(2)
+                        else:
+                            trend_profile = True if current_time.weekday() in (1, 2, 3) else False
+                            perfil = "Valeria" if trend_profile == True else "Emily"
+                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                       f"Sin señales de activacion ({perfil}). Se reinicia el ciclo de comprobacion dentro de cuatro horas.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
