@@ -129,7 +129,7 @@ def activacion(symbols):
                     if comprobacion == "Buy":
                         if penultim_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion ALCISTA: Se produce señal de salida de la posicion.")
+                                       f"Posicion ALCISTA (Valeria): Se produce señal de salida de la posicion.")
                             print(message)
                             write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url, parameters.url_position)
@@ -137,7 +137,7 @@ def activacion(symbols):
                             time.sleep(2)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion ALCISTA: activa y sin cambios. Se mantiene la posicion.")
+                                       f"Posicion ALCISTA (Valeria): activa y sin cambios. Se mantiene la posicion.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
@@ -145,7 +145,7 @@ def activacion(symbols):
                     elif comprobacion == "Sell":
                         if penultim_h == 1:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion BAJISTA: Se produce señal de salida de la posicion.")
+                                       f"Posicion BAJISTA (Valeria): Se produce señal de salida de la posicion.")
                             print(message)
                             write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url, parameters.url_position)
@@ -153,7 +153,7 @@ def activacion(symbols):
                             time.sleep(2)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion BAJISTA: activa y sin cambios. Se mantiene la posicion.")
+                                       f"Posicion BAJISTA (Valeria): activa y sin cambios. Se mantiene la posicion.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
@@ -162,7 +162,7 @@ def activacion(symbols):
                     if comprobacion_prime == "Buy":  # INSTANCIA SECUNDARIA
                         if penultim_h == 1:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion ALCISTA: Se produce señal de salida de la posicion.")
+                                       f"Posicion ALCISTA (Emily): Se produce señal de salida de la posicion.")
                             print(message)
                             write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
@@ -172,20 +172,26 @@ def activacion(symbols):
                             time.sleep(2)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion ALCISTA: activa y sin cambios. Se mantiene la posicion.")
+                                       f"Posicion ALCISTA (Emily): activa y sin cambios. Se mantiene la posicion.")
                             print(message)
                             write_messages(message)
                             time.sleep(2)
                     elif comprobacion_prime == "Sell":
                         if penultim_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
-                                       f"Posicion BAJISTA: Se produce señal de salida de la posicion.")
+                                       f"Posicion BAJISTA (Emily): Se produce señal de salida de la posicion.")
                             print(message)
                             write_messages(message)
                             send_close_to_bybit(symbol, parameters.api_key_prime, parameters.api_secret_prime,
                                                 parameters.url,
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
+                            time.sleep(2)
+                        else:
+                            message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
+                                       f"Posicion BAJISTA (Emily): activa y sin cambios. Se mantiene la posicion.")
+                            print(message)
+                            write_messages(message)
                             time.sleep(2)
 
 
