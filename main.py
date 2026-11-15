@@ -204,21 +204,24 @@ def activacion(symbols):
                             rage_profile = True if current_time.weekday() in (0, 4, 5, 6) else False
 
                             if trend_profile:
-                                send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=low, takeprofit=high)
                                 message = (
                                     f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                     f"Posicion ALCISTA (Valeria): Condiciones de entrada favorables. Se procede con envio de orden.")
                                 print(message)
                                 write_messages(message)
+                                send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret,
+                                                    parameters.qty, parameters.url, stoploss=low, takeprofit=high)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                                 time.sleep(2)
                             elif rage_profile:  # Emily Profile
-                                send_order_to_bybit(symbol, "Sell", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=high, takeprofit=low) # INSTANCIA SECUNDARIA (Emily)
                                 message = (
                                     f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                     f"Posicion BAJISTA (Emily): Condiciones de entrada favorables. Se procede con envio de orden.")
                                 print(message)
                                 write_messages(message)
+                                send_order_to_bybit(symbol, "Sell", parameters.api_key_prime,
+                                                    parameters.api_secret_prime, parameters.qty, parameters.url,
+                                                    stoploss=high, takeprofit=low)  # INSTANCIA SECUNDARIA (Emily)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                                 time.sleep(2)
                         elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0): # Diario: Bajista, Señal: Bajista
@@ -228,20 +231,23 @@ def activacion(symbols):
                             rage_profile = True if current_time.weekday() in (0, 4, 5, 6) else False
 
                             if trend_profile:
-                                send_order_to_bybit(symbol,"Sell", parameters.api_key, parameters.api_secret, parameters.qty, parameters.url, stoploss=high, takeprofit=low)
                                 message = (
                                     f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                     f"Posicion BAJISTA (Valeria): Condiciones de entrada favorables. Se procede con envio de orden.")
                                 print(message)
                                 write_messages(message)
+                                send_order_to_bybit(symbol, "Sell", parameters.api_key, parameters.api_secret,
+                                                    parameters.qty, parameters.url, stoploss=high, takeprofit=low)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             elif rage_profile:  # Emily Profile
-                                send_order_to_bybit(symbol, "Buy", parameters.api_key_prime, parameters.api_secret_prime, parameters.qty, parameters.url, stoploss=low, takeprofit=high) # INSTANCIA SECUNDARIA (Emily)
                                 message = (
                                     f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                     f"Posicion ALCISTA (Emily): Condiciones de entrada favorables. Se procede con envio de orden.")
                                 print(message)
                                 write_messages(message)
+                                send_order_to_bybit(symbol, "Buy", parameters.api_key_prime,
+                                                    parameters.api_secret_prime, parameters.qty, parameters.url,
+                                                    stoploss=low, takeprofit=high)  # INSTANCIA SECUNDARIA (Emily)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                                 time.sleep(2)
                         else:
