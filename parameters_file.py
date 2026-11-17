@@ -7,7 +7,6 @@ from pathlib import Path
 
 JSON_DIR = Path(__file__).parent / "json_parameters"
 
-
 def get_parameters(symbol: str) -> SimpleNamespace:
     """Lee los parámetros del JSON correspondiente al símbolo.
 
@@ -33,5 +32,18 @@ def get_parameters(symbol: str) -> SimpleNamespace:
         url_position=parameters["url_position_demo"],
         tg_bot_token=parameters["bot_token"],
         tg_chat_id=parameters["chat_id"]
+    )
+
+def get_global_parameters() -> SimpleNamespace:
+    """Parametros que definen el comportamiento general en cada iteracion
+    """
+    parameter_file = JSON_DIR / f"global_parameters.json"
+    with parameter_file.open("r", encoding="utf-8") as file:
+        parameters = json.load(file)
+
+    return SimpleNamespace(
+        trend_market=parameters["trend_market"],
+        range_market=parameters["range_market"],
+        system_on=parameters["system_on"]
     )
 

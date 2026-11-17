@@ -6,7 +6,7 @@ import requests
 from calculations import hanking_ashi_bars
 from bybit_modules import send_order_to_bybit, is_position_open, send_close_to_bybit
 from miscelaneos import send_telegram_notification, write_messages, asset_sentiment, thresholds
-from parameters_file import get_parameters
+from parameters_file import get_parameters, get_global_parameters
 
 
 def activacion(symbols):
@@ -15,12 +15,14 @@ def activacion(symbols):
         current_time = datetime.now()
         if current_time.minute == 1 and current_time.second == 10:
             for symbol in symbols:
+                # Se extraen los parametros globales del sistema
+                global_parameters = get_global_parameters()
 
                 # Se extrae los parametros segun que simbolo se itera
                 parameters = get_parameters(symbol)
 
                 # Se realiza comprobacion si el simbolo esta marcado como activo en el json
-                if parameters.status == 1:
+                if parameters.status == 1 or global_parameters.system_on == True:
                     pass
                 else:
                     continue
@@ -199,8 +201,8 @@ def activacion(symbols):
                         if last_d == 1 and (antepenultim_h == 0 and penultim_h == 1): # Diario: Alcista, Señal: Alcista
                             # sentiment = asset_sentiment(parameters.asset)
                             high, low = thresholds(symbol, parameters.qty, max_threshold=150)
-                            trend_profile = True if current_time.weekday() in (1, 2, 3) else False
-                            rage_profile = True if current_time.weekday() in (0, 4, 5, 6) else False
+                            trend_profile = True if (current_time.weekday() in (1, 2, 3) and global_parameters.trend_market == True) or (current_time.weekday() in (0, 4, 5, 6) and global_parameters.range_market == False) else False
+                            rage_profile = True if (current_time.weekday() in (0, 4, 5, 6) and global_parameters.range_market == True) or (current_time.weekday() in (1, 2, 3) and global_parameters.trend_market == False) else False
 
                             if trend_profile:
                                 message = (
@@ -226,8 +228,14 @@ def activacion(symbols):
                         elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0): # Diario: Bajista, Señal: Bajista
                             # sentiment = asset_sentiment(parameters.asset)
                             high, low = thresholds(symbol, parameters.qty, max_threshold=150)
-                            trend_profile = True if current_time.weekday() in (1, 2, 3) else False
-                            rage_profile = True if current_time.weekday() in (0, 4, 5, 6) else False
+                            trend_profile = True if (current_time.weekday() in (1, 2,
+                                                                                3) and global_parameters.trend_market == True) or (
+                                                                current_time.weekday() in (0, 4, 5,
+                                                                                           6) and global_parameters.range_market == False) else False
+                            rage_profile = True if (current_time.weekday() in (0, 4, 5,
+                                                                               6) and global_parameters.range_market == True) or (
+                                                               current_time.weekday() in (1, 2,
+                                                                                          3) and global_parameters.range_market == False) else False
 
                             if trend_profile:
                                 message = (
@@ -250,8 +258,20 @@ def activacion(symbols):
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                                 time.sleep(2)
                         else:
-                            trend_profile = True if current_time.weekday() in (1, 2, 3) else False
-                            perfil = "Valeria" if trend_profile == True else "Emily"
+                            trend_profile = True if (current_time.weekday() in (1, 2,
+                                                                                3) and global_parameters.trend_market == True) or (
+                                                                current_time.weekday() in (0, 4, 5,
+                                                                                           6) and global_parameters.range_market == False) else False
+                            rage_profile = True if (current_time.weekday() in (0, 4, 5,
+                                                                               6) and global_parameters.range_market == True) or (
+                                                               current_time.weekday() in (1, 2,
+                                                                                          3) and global_parameters.range_market == False) else False
+                            if trend_profile:
+                                perfil = "Valeria"
+                            elif rage_profile:
+                                perfil = "Emily"
+                            else:
+                                perfil = "Sin identificacion de perfil"
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Sin señales de activacion ({perfil}). Se reinicia el ciclo de comprobacion dentro de cuatro horas.")
                             print(message)
