@@ -6,7 +6,7 @@ import requests
 from calculations import hanking_ashi_bars
 from bybit_modules import send_order_to_bybit, is_position_open, send_close_to_bybit
 from miscelaneos import send_telegram_notification, write_messages, asset_sentiment, thresholds
-from parameters_file import *
+from parameters_file import get_parameters
 
 
 def activacion(symbols):
@@ -17,8 +17,7 @@ def activacion(symbols):
             for symbol in symbols:
 
                 # Se extrae los parametros segun que simbolo se itera
-                parameters_name = "parameters_" + symbol.lower()
-                parameters = globals()[parameters_name]()
+                parameters = get_parameters(symbol)
 
                 # Se realiza comprobacion si el simbolo esta marcado como activo en el json
                 if parameters.status == 1:
