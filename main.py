@@ -63,12 +63,14 @@ def activacion(symbols):
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(1)
+
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion ALCISTA (Valeria): La posicion continua en tendencia alcista. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
                             time.sleep(1)
+
 
                     elif comprobacion == "Sell":
                         if last_h == 1:
@@ -80,12 +82,14 @@ def activacion(symbols):
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                             time.sleep(1)
+
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion BAJISTA (Valeria): La posicion continua en tendencia bajista. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
                             time.sleep(1)
+
 
 
                     # ---------- Comprobacion de la posicion de la instancia secundaria Prime en 1 hora (Emily) ----------
@@ -216,6 +220,7 @@ def activacion(symbols):
                                                     parameters.qty, parameters.url, stoploss=low, takeprofit=high)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                                 time.sleep(1)
+                                continue
                             elif rage_profile:  # Emily Profile
                                 message = (
                                     f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -227,6 +232,7 @@ def activacion(symbols):
                                                     stoploss=high, takeprofit=low)  # INSTANCIA SECUNDARIA (Emily)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                                 time.sleep(1)
+                                continue
                         elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0): # Diario: Bajista, Señal: Bajista
                             # sentiment = asset_sentiment(parameters.asset)
                             high, low = thresholds(symbol, parameters.qty, max_threshold=150)
@@ -249,6 +255,7 @@ def activacion(symbols):
                                                     parameters.qty, parameters.url, stoploss=high, takeprofit=low)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                                 time.sleep(1)
+                                continue
                             elif rage_profile:  # Emily Profile
                                 message = (
                                     f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -260,6 +267,7 @@ def activacion(symbols):
                                                     stoploss=low, takeprofit=high)  # INSTANCIA SECUNDARIA (Emily)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
                                 time.sleep(1)
+                                continue
                         else:
                             trend_profile = True if (current_time.weekday() in (0, 1, 2, 3) and global_parameters.trend_market == True) or (
                                                                 current_time.weekday() in (4, 5, 6) and global_parameters.range_market == False) else False
@@ -276,7 +284,6 @@ def activacion(symbols):
                             print(message)
                             write_messages(message)
                             time.sleep(2)
-                            continue
         time.sleep(1)
 
 # Press the green button in the gutter to run the script..
