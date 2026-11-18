@@ -215,7 +215,7 @@ def activacion(symbols):
                                 send_order_to_bybit(symbol, "Buy", parameters.api_key, parameters.api_secret,
                                                     parameters.qty, parameters.url, stoploss=low, takeprofit=high)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                                time.sleep(2)
+                                time.sleep(1)
                             elif rage_profile:  # Emily Profile
                                 message = (
                                     f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -226,7 +226,7 @@ def activacion(symbols):
                                                     parameters.api_secret_prime, parameters.qty, parameters.url,
                                                     stoploss=high, takeprofit=low)  # INSTANCIA SECUNDARIA (Emily)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                                time.sleep(2)
+                                time.sleep(1)
                         elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0): # Diario: Bajista, Señal: Bajista
                             # sentiment = asset_sentiment(parameters.asset)
                             high, low = thresholds(symbol, parameters.qty, max_threshold=150)
@@ -248,6 +248,7 @@ def activacion(symbols):
                                 send_order_to_bybit(symbol, "Sell", parameters.api_key, parameters.api_secret,
                                                     parameters.qty, parameters.url, stoploss=high, takeprofit=low)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
+                                time.sleep(1)
                             elif rage_profile:  # Emily Profile
                                 message = (
                                     f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -258,16 +259,12 @@ def activacion(symbols):
                                                     parameters.api_secret_prime, parameters.qty, parameters.url,
                                                     stoploss=low, takeprofit=high)  # INSTANCIA SECUNDARIA (Emily)
                                 send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                                time.sleep(2)
+                                time.sleep(1)
                         else:
-                            trend_profile = True if (current_time.weekday() in (1, 2,
-                                                                                3) and global_parameters.trend_market == True) or (
-                                                                current_time.weekday() in (0, 4, 5,
-                                                                                           6) and global_parameters.range_market == False) else False
-                            rage_profile = True if (current_time.weekday() in (0, 4, 5,
-                                                                               6) and global_parameters.range_market == True) or (
-                                                               current_time.weekday() in (1, 2,
-                                                                                          3) and global_parameters.range_market == False) else False
+                            trend_profile = True if (current_time.weekday() in (0, 1, 2, 3) and global_parameters.trend_market == True) or (
+                                                                current_time.weekday() in (4, 5, 6) and global_parameters.range_market == False) else False
+                            rage_profile = True if ((current_time.weekday() in (4, 5, 6) and global_parameters.range_market == True) or
+                                                    (current_time.weekday() in (0, 1, 2, 3) and global_parameters.range_market == False)) else False
                             if trend_profile:
                                 perfil = "Valeria"
                             elif rage_profile:
