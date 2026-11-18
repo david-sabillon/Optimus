@@ -48,7 +48,7 @@ def activacion(symbols):
                         f"{symbol} en este ciclo: {error}")
                         print(message)
                         write_messages(message)
-                        time.sleep(2)
+                        time.sleep(1)
                         continue
 
                 # Comprobacion cada hora de posiciones abiertas que vayan contra tendencia antes del cierre de la vela
@@ -62,13 +62,13 @@ def activacion(symbols):
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url,
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                            time.sleep(2)
+                            time.sleep(1)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion ALCISTA (Valeria): La posicion continua en tendencia alcista. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
-                            time.sleep(2)
+                            time.sleep(1)
 
                     elif comprobacion == "Sell":
                         if last_h == 1:
@@ -79,13 +79,13 @@ def activacion(symbols):
                             send_close_to_bybit(symbol, parameters.api_key, parameters.api_secret, parameters.url,
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                            time.sleep(2)
+                            time.sleep(1)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion BAJISTA (Valeria): La posicion continua en tendencia bajista. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
-                            time.sleep(2)
+                            time.sleep(1)
 
 
                     # ---------- Comprobacion de la posicion de la instancia secundaria Prime en 1 hora (Emily) ----------
@@ -99,13 +99,13 @@ def activacion(symbols):
                                                 parameters.url,
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                            time.sleep(2)
+                            time.sleep(1)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion ALCISTA (Emily): No se presenta vela favorable. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
-                            time.sleep(2)
+                            time.sleep(1)
                     elif comprobacion_prime == "Sell":
                         if last_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -116,13 +116,13 @@ def activacion(symbols):
                                                 parameters.url,
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                            time.sleep(2)
+                            time.sleep(1)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion BAJISTA (Emily): No se presenta vela favorable. Se reinicia el ciclo de comprobacion dentro de una hora.")
                             print(message)
                             write_messages(message)
-                            time.sleep(2)
+                            time.sleep(1)
 
 
                 else:
@@ -141,7 +141,7 @@ def activacion(symbols):
                                        f"Posicion ALCISTA (Valeria): activa y sin cambios. Se mantiene la posicion.")
                             print(message)
                             write_messages(message)
-                            time.sleep(2)
+                            time.sleep(1)
 
                     elif comprobacion == "Sell":
                         if penultim_h == 1:
@@ -157,7 +157,7 @@ def activacion(symbols):
                                        f"Posicion BAJISTA (Valeria): activa y sin cambios. Se mantiene la posicion.")
                             print(message)
                             write_messages(message)
-                            time.sleep(2)
+                            time.sleep(1)
 
                     # -------- Comprobacion para la posicion de la instancia secundaria PRIME en 4 horas (Emily) ---------
                     if comprobacion_prime == "Buy":  # INSTANCIA SECUNDARIA
@@ -176,7 +176,7 @@ def activacion(symbols):
                                        f"Posicion ALCISTA (Emily): activa y sin cambios. Se mantiene la posicion.")
                             print(message)
                             write_messages(message)
-                            time.sleep(2)
+                            time.sleep(1)
                     elif comprobacion_prime == "Sell":
                         if penultim_h == 0:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
@@ -187,13 +187,13 @@ def activacion(symbols):
                                                 parameters.url,
                                                 parameters.url_position)
                             send_telegram_notification(message, parameters.tg_bot_token, parameters.tg_chat_id)
-                            time.sleep(2)
+                            time.sleep(1)
                         else:
                             message = (f"{current_time.date()} {current_time.hour}:0{current_time.minute}: {symbol} "
                                        f"Posicion BAJISTA (Emily): activa y sin cambios. Se mantiene la posicion.")
                             print(message)
                             write_messages(message)
-                            time.sleep(2)
+                            time.sleep(1)
 
 
                     # SI NO HAY ORDEN ABIERTA, SE COMPRUEBAN LAS CONDICIONES DE ENTRADA EN CUATRO HORAS
