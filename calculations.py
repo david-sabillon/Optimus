@@ -71,25 +71,19 @@ def hanking_ashi_bars(symbol):
     """
     # La importación local evita la dependencia circular con main.py.
 
-    heikin_ashi_semanal = get_kline_data(symbol, interval="W", limit=HISTORICAL_CANDLES)
-    time.sleep(5)
     heikin_ashi_diaria = get_kline_data(symbol, interval="D", limit=HISTORICAL_CANDLES)
     time.sleep(5)
     heikin_ashi_hora = get_kline_data(symbol, interval="240", limit=HISTORICAL_CANDLES)
-    time.sleep(10)
+    time.sleep(5)
 
-    last_ashi_semanal, penultim_ashi_semanal, antepenultim_ashi_semanal = _heikin_ashi_direction(heikin_ashi_semanal, "semanal")
     last_ashi_diaria, penultim_ashi_diaria, antepenultim_ashi_diaria = _heikin_ashi_direction(heikin_ashi_diaria, "diaria")
     last_ashi_hora, penultim_ashi_hora, antepenultim_ashi_hora = _heikin_ashi_direction(heikin_ashi_hora, "horaria")
 
     return (
-        last_ashi_semanal,
         last_ashi_diaria,
         last_ashi_hora,
-        penultim_ashi_semanal,
         penultim_ashi_diaria,
         penultim_ashi_hora,
-        antepenultim_ashi_semanal,
         antepenultim_ashi_diaria,
         antepenultim_ashi_hora,
     )
