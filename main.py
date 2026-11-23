@@ -236,14 +236,10 @@ def activacion(symbols):
                         elif last_d == 0 and (antepenultim_h == 1 and penultim_h == 0): # Diario: Bajista, Señal: Bajista
                             # sentiment = asset_sentiment(parameters.asset)
                             high, low = thresholds(symbol, parameters.qty, max_threshold=150)
-                            trend_profile = True if (current_time.weekday() in (1, 2,
-                                                                                3) and global_parameters.trend_market == True) or (
-                                                                current_time.weekday() in (0, 4, 5,
-                                                                                           6) and global_parameters.range_market == False) else False
-                            rage_profile = True if (current_time.weekday() in (0, 4, 5,
-                                                                               6) and global_parameters.range_market == True) or (
-                                                               current_time.weekday() in (1, 2,
-                                                                                          3) and global_parameters.range_market == False) else False
+                            trend_profile = True if ((current_time.weekday() in (0, 1, 2, 3) and global_parameters.trend_market == True) or
+                                                     (current_time.weekday() in (4, 5, 6) and global_parameters.range_market == False)) else False # 0 = lunes
+                            rage_profile = True if ((current_time.weekday() in (4, 5, 6) and global_parameters.range_market == True) or     # 4 = Viernes
+                                                    (current_time.weekday() in (0, 1, 2, 3) and global_parameters.trend_market == False)) else False
 
                             if trend_profile:
                                 message = (
@@ -269,10 +265,10 @@ def activacion(symbols):
                                 time.sleep(1)
                                 continue
                         else:
-                            trend_profile = True if (current_time.weekday() in (0, 1, 2, 3) and global_parameters.trend_market == True) or (
-                                                                current_time.weekday() in (4, 5, 6) and global_parameters.range_market == False) else False
-                            rage_profile = True if ((current_time.weekday() in (4, 5, 6) and global_parameters.range_market == True) or
-                                                    (current_time.weekday() in (0, 1, 2, 3) and global_parameters.range_market == False)) else False
+                            trend_profile = True if ((current_time.weekday() in (0, 1, 2, 3) and global_parameters.trend_market == True) or
+                                                     (current_time.weekday() in (4, 5, 6) and global_parameters.range_market == False)) else False # 0 = lunes
+                            rage_profile = True if ((current_time.weekday() in (4, 5, 6) and global_parameters.range_market == True) or     # 4 = Viernes
+                                                    (current_time.weekday() in (0, 1, 2, 3) and global_parameters.trend_market == False)) else False
                             if trend_profile:
                                 perfil = "Valeria"
                             elif rage_profile:
